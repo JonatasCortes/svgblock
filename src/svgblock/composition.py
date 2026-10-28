@@ -2,9 +2,13 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import TypeVar
 
-from .components import Component, Image, Paragraph, RenderedComponent, Subsection, Title
 from .image_reader import read_image
 from .themes import Theme
+from .components import (
+    TABLE_BORDER_RADIUS, TABLE_CELL_PADDING, TABLE_FONT_SIZE,
+    Alignment, CellValue, Component, Image, Paragraph, RenderedComponent,
+    Subsection, Table, Title, format_cell_value,
+)
 
 TITLE_FONT_SIZE = 20
 SUBSECTION_FONT_SIZE = 17
@@ -54,6 +58,62 @@ class Composer:
         if not columns:
             raise ValueError("columns() needs at least one Column.")
         self._components.append(_Columns(columns))
+        return self
+
+    def table(
+        self: _Self,
+        columns: Sequence[str],
+        rows: Sequence[Sequence[CellValue]],
+        *,
+        font_size: float = TABLE_FONT_SIZE,
+        cell_padding: float = TABLE_CELL_PADDING,
+        border_radius: float = TABLE_BORDER_RADIUS,
+        align: Sequence[Alignment] | None = None,
+        weights: Sequence[float] | None = None,
+        striped: bool = True,
+        row_dividers: bool = True,
+        column_dividers: bool = False,
+        highlight: Sequence[str] = (),
+    ) -> _Self:
+        if not columns:
+            raise ValueError("table() needs at least one column.")
+        column_count = len(columns)
+        for row in rows:
+            if len(row) != column_count:
+                raise ValueError(
+                    f"Every row needs {column_count} cells, got {len(row)}: {list(row)!r}.")
+
+        alignments = tuple(align) if align is not None else (
+            "left",) * column_count
+        if len(alignments) != column_count:
+            raise ValueError(
+                f"align needs {column_count} values, got {len(alignments)}.")
+
+        column_weights = tuple(weights) if weights is not None else (
+            DEFAULT_COLUMN_WEIGHT,) * column_count
+        if len(column_weights) != column_count:
+            raise ValueError(
+                f"weights needs {column_count} values, got {len(column_weights)}.")
+        if any(weight <= 0 for weight in column_weights):
+            raise ValueError(
+                f"Column weights must be greater than zero, got {column_weights!r}.")
+
+        self._components.append(
+            Table(
+                columns=tuple(columns),
+                rows=tuple(tuple(format_cell_value(cell)
+                           for cell in row) for row in rows),
+                font_size=font_size,
+                cell_padding=cell_padding,
+                border_radius=border_radius,
+                alignments=alignments,
+                weights=column_weights,
+                striped=striped,
+                row_dividers=row_dividers,
+                column_dividers=column_dividers,
+                highlighted_words=tuple(highlight),
+            )
+        )
         return self
 
     def _render_components(

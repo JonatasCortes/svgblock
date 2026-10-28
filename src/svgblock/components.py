@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Literal, Protocol
 from xml.sax.saxutils import escape
 
 from .image_reader import ImageData
@@ -17,6 +17,23 @@ TITLE_BAR_GAP = 11
 
 SUBSECTION_MARKER_RADIUS_RATIO = 0.18
 SUBSECTION_MARKER_GAP = 8
+
+Alignment = Literal["left", "center", "right"]
+CellValue = str | int | float | bool | None
+
+TABLE_FONT_SIZE = 14
+TABLE_CELL_PADDING = 8
+TABLE_BORDER_RADIUS = 8
+TABLE_LINE_WIDTH = 1
+
+TRUE_SYMBOL = "✓"
+FALSE_SYMBOL = "✗"
+
+_TEXT_ANCHORS: dict[Alignment, str] = {
+    "left": "start",
+    "center": "middle",
+    "right": "end",
+}
 
 
 @dataclass(frozen=True)
@@ -162,12 +179,19 @@ def _bold_lines_markup(
 
 
 def _text_element(
-    x: float, baseline: float, font_size: float, fill: str, content: str, bold: bool = False
+    x: float,
+    baseline: float,
+    font_size: float,
+    fill: str,
+    content: str,
+    bold: bool = False,
+    anchor: str = "start",
 ) -> str:
     weight = f' font-weight="{BOLD_WEIGHT}"' if bold else ""
+    anchor_attribute = f' text-anchor="{anchor}"' if anchor != "start" else ""
     return (
         f'<text x="{x:.1f}" y="{baseline:.1f}" font-size="{font_size:g}" '
-        f'fill="{fill}"{weight}>{content}</text>'
+        f'fill="{fill}"{weight}{anchor_attribute}>{content}</text>'
     )
 
 
@@ -177,4 +201,202 @@ def _segments_markup(segments: list[TextSegment], highlight_color: str) -> str:
         if segment.highlighted
         else escape(segment.text)
         for segment in segments
+    )
+
+
+def format_cell_value(value: CellValue) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, bool):
+        return TRUE_SYMBOL if value else FALSE_SYMBOL
+    return str(value)
+
+
+@dataclass(frozen=True)
+class Table:
+    columns: tuple[str, ...]
+    rows: tuple[tuple[str, ...], ...]
+    font_size: float
+    cell_padding: float
+    border_radius: float
+    alignments: tuple[Alignment, ...]
+    weights: tuple[float, ...]
+    striped: bool
+    row_dividers: bool
+    column_dividers: bool
+    highlighted_words: tuple[str, ...] = ()
+
+    def render(self, theme: Theme, left: float, top: float, width: float) -> RenderedComponent:
+        total_weight = sum(self.weights)
+        column_widths = [width * weight /
+                         total_weight for weight in self.weights]
+        column_lefts = _running_positions(left, column_widths)
+
+        header = [
+            [
+                escape(line)
+                for line in _wrap_bold_text(
+                    name, self.font_size, column_width - 2 * self.cell_padding
+                )
+            ]
+            for name, column_width in zip(self.columns, column_widths)
+        ]
+        body = [
+            [
+                self._body_cell(text, theme, column_width)
+                for text, column_width in zip(row, column_widths)
+            ]
+            for row in self.rows
+        ]
+        table_rows = [header, *body]
+
+        row_heights = [self._row_height(row) for row in table_rows]
+        row_tops = _running_positions(top, row_heights)
+        height = sum(row_heights)
+
+        svg = (
+            self._background_markup(
+                theme, left, top, width, height, row_tops, row_heights)
+            + self._dividers_markup(theme, left, top, width,
+                                    height, column_lefts, row_tops, row_heights)
+            + self._text_markup(theme, table_rows,
+                                column_lefts, column_widths, row_tops)
+            + self._border_markup(theme, left, top, width, height)
+        )
+        return RenderedComponent(svg=svg, height=height)
+
+    def _body_cell(self, text: str, theme: Theme, column_width: float) -> list[str]:
+        segments = parse_highlights(text, self.highlighted_words)
+        lines = wrap_into_lines(segments, self.font_size,
+                                column_width - 2 * self.cell_padding)
+        return [_segments_markup(line, theme["highlight"]) for line in lines]
+
+    def _row_height(self, row: list[list[str]]) -> float:
+        line_count = max([1, *(len(cell) for cell in row)])
+        return line_count * _line_height(self.font_size) + 2 * self.cell_padding
+
+    def _background_markup(
+        self, theme: Theme, left: float, top: float, width: float, height: float,
+        row_tops: list[float], row_heights: list[float],
+    ) -> str:
+        clip_id = f"table-clip-{left:.0f}-{top:.0f}"
+        clip = (
+            f'<clipPath id="{clip_id}"><rect x="{left:.1f}" y="{top:.1f}" '
+            f'width="{width:.1f}" height="{height:.1f}" rx="{self.border_radius:g}"/></clipPath>'
+        )
+        stripes = ""
+        if self.striped:
+            stripes = "".join(
+                _filled_rect(left, row_tops[index], width, row_heights[index],
+                             theme["table_stripe_background"])
+                for index in range(2, len(row_tops), 2)
+            )
+        return (
+            clip
+            + f'<g clip-path="url(#{clip_id})">'
+            + _filled_rect(left, top, width, height, theme["table_background"])
+            + _filled_rect(left, top, width,
+                           row_heights[0], theme["table_header_background"])
+            + stripes
+            + "</g>"
+        )
+
+    def _dividers_markup(
+        self, theme: Theme, left: float, top: float, width: float, height: float,
+        column_lefts: list[float], row_tops: list[float], row_heights: list[float],
+    ) -> str:
+        color = theme["table_divider"]
+        lines: list[str] = []
+        for row_index in range(len(row_tops) - 1):
+            if row_index == 0 or self.row_dividers:
+                y = row_tops[row_index] + row_heights[row_index]
+                lines.append(_line(left, y, left + width, y, color))
+        if self.column_dividers:
+            for column_left in column_lefts[1:]:
+                lines.append(
+                    _line(column_left, top, column_left, top + height, color))
+        return "".join(lines)
+
+    def _text_markup(
+        self, theme: Theme, table_rows: list[list[list[str]]],
+        column_lefts: list[float], column_widths: list[float], row_tops: list[float],
+    ) -> str:
+        parts: list[str] = []
+        for row_index, row in enumerate(table_rows):
+            is_header = row_index == 0
+            fill = theme["table_header_text"] if is_header else theme["table_text"]
+            for column_index, line_markups in enumerate(row):
+                alignment = self.alignments[column_index]
+                parts.append(
+                    _cell_lines_markup(
+                        line_markups,
+                        x=self._text_x(
+                            alignment, column_lefts[column_index], column_widths[column_index]),
+                        top=row_tops[row_index] + self.cell_padding,
+                        font_size=self.font_size,
+                        fill=fill,
+                        anchor=_TEXT_ANCHORS[alignment],
+                        bold=is_header,
+                    )
+                )
+        return "".join(parts)
+
+    def _text_x(self, alignment: Alignment, column_left: float, column_width: float) -> float:
+        if alignment == "left":
+            return column_left + self.cell_padding
+        if alignment == "right":
+            return column_left + column_width - self.cell_padding
+        return column_left + column_width / 2
+
+    def _border_markup(
+        self, theme: Theme, left: float, top: float, width: float, height: float
+    ) -> str:
+        inset = TABLE_LINE_WIDTH / 2
+        return (
+            f'<rect x="{left + inset:.1f}" y="{top + inset:.1f}" '
+            f'width="{width - TABLE_LINE_WIDTH:.1f}" height="{height - TABLE_LINE_WIDTH:.1f}" '
+            f'rx="{self.border_radius:g}" fill="none" stroke="{theme["table_border"]}" '
+            f'stroke-width="{TABLE_LINE_WIDTH}"/>'
+        )
+
+
+def _running_positions(start: float, sizes: list[float]) -> list[float]:
+    positions: list[float] = []
+    current = start
+    for size in sizes:
+        positions.append(current)
+        current += size
+    return positions
+
+
+def _filled_rect(x: float, y: float, width: float, height: float, fill: str) -> str:
+    return (
+        f'<rect x="{x:.1f}" y="{y:.1f}" width="{width:.1f}" '
+        f'height="{height:.1f}" fill="{fill}"/>'
+    )
+
+
+def _line(x1: float, y1: float, x2: float, y2: float, color: str) -> str:
+    return (
+        f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" '
+        f'stroke="{color}" stroke-width="{TABLE_LINE_WIDTH}"/>'
+    )
+
+
+def _cell_lines_markup(
+    contents: list[str], x: float, top: float, font_size: float,
+    fill: str, anchor: str, bold: bool,
+) -> str:
+    line_height = _line_height(font_size)
+    return "".join(
+        _text_element(
+            x=x,
+            baseline=_baseline(top + index * line_height, font_size),
+            font_size=font_size,
+            fill=fill,
+            content=content,
+            bold=bold,
+            anchor=anchor,
+        )
+        for index, content in enumerate(contents)
     )

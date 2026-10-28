@@ -20,24 +20,31 @@ class Block(Composer):
         theme: str = DEFAULT_THEME_NAME,
         width: float = DEFAULT_WIDTH,
         animation: Animation | str = DEFAULT_ANIMATION,
+        frame: bool = True,
     ) -> None:
         super().__init__()
         self._theme = _find_theme(theme)
         self._width = width
         self._animation = _parse_animation(animation)
+        self._frame = frame
 
     def render(self) -> str:
-        content_width = self._width - 2 * BLOCK_PADDING
+        padding = BLOCK_PADDING if self._frame else 0
+        content_width = self._width - 2 * padding
         rendered = self._render_components(
-            self._theme, BLOCK_PADDING, BLOCK_PADDING, content_width
+            self._theme, padding, padding, content_width
         )
-        height = rendered.height + 2 * BLOCK_PADDING
+        height = rendered.height + 2 * padding
+        frame_markup = (
+            build_frame(self._theme, self._width,
+                        height) if self._frame else ""
+        )
         return (
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{self._width:g}" '
             f'height="{height:g}" viewBox="0 0 {self._width:g} {height:g}">'
             f"<style>{build_animation_css(self._animation)}</style>"
             f'<g class="{ENTRY_CLASS_NAME}">'
-            f"{build_frame(self._theme, self._width, height)}"
+            f"{frame_markup}"
             f'<g font-family="{FONT_FAMILY}">{rendered.svg}</g>'
             "</g></svg>"
         )
