@@ -6,7 +6,7 @@ from pathlib import Path
 from src.svgblock import Animation, Block, Column, THEMES
 
 ASSETS_DIR = Path("assets")
-LOGO_PATH = (ASSETS_DIR / "logo.png").as_posix()
+LOGO_PATH = (ASSETS_DIR / "svgblock_logo.png").as_posix()
 
 DOC_THEME = "neon"
 DOC_WIDTH = 800
@@ -14,7 +14,7 @@ DOC_ANIMATION = Animation.FADE
 
 THEME_WIDTH = 500
 ANIMATION_WIDTH = 400
-ANIMATION_LOOP_SECONDS = 5
+ANIMATION_LOOP_SECONDS = 4
 
 
 # ---------------------------------------------------------------------------
@@ -367,7 +367,10 @@ def building_content() -> Block:
         .divider()
         .text("And this one was created with a coverage of 0.6, so it is shorter and centered:")
         .divider(0.6)
-        .text("The coverage must be greater than 0 and at most 1.")
+        .text("The coverage must be at least 0 and at most 1.")
+        .divider(0)
+        .divider(0)
+        .text('**__coverage=0__** can be used to "skip" a line, creating a larger gap between two pieces of text (as shown above).')
     )
 
 
@@ -483,8 +486,8 @@ def images() -> Block:
         .divider()
         .text("Combine an image with columns to put a picture beside some text:")
         .columns(
-            Column(1).image(LOGO_PATH, 110),
-            Column(4)
+            Column().divider(0).image(LOGO_PATH, 350).divider(0),
+            Column()
             .subsection("A logo beside the text")
             .text("The image sits in a narrow column and the text takes the rest of the width. "
                   "The header of this README is built the same way."),
@@ -557,10 +560,8 @@ def animation_showcase(animation: Animation) -> Block:
         Block(DOC_THEME, ANIMATION_WIDTH, animation,
               animation_loop=ANIMATION_LOOP_SECONDS)
         .title(name.upper())
-        .text(f'Use it with animation="{name}".')
+        .text(f'Use it with **__animation="{name}"__**.')
         .text(ANIMATION_INFO.get(name, "An entrance animation."))
-        .text(f"This preview repeats every {ANIMATION_LOOP_SECONDS:g} seconds "
-              f'with animation_loop={ANIMATION_LOOP_SECONDS:g}.')
     )
 
 

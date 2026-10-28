@@ -110,7 +110,7 @@ class Composer:
         return self
 
     def divider(self: _Self, coverage: float = DIVIDER_COVERAGE) -> _Self:
-        if not 0 < coverage <= 1:
+        if not 0 <= coverage <= 1:
             raise ValueError(
                 f"Divider coverage must be between 0 and 1, got {coverage!r}.")
         self._components.append(Divider(coverage))

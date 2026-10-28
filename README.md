@@ -14,7 +14,6 @@
   <img src="assets/intro.svg" alt="What svgblock does" width="900">
 </p>
 
----
 
 <a id="table-of-contents"></a>
 <p align="center">
@@ -57,7 +56,6 @@
   <li><a href="#troubleshooting">🩺 Troubleshooting</a></li>
 </ul>
 
----
 
 <a id="how-a-block-is-built"></a>
 <p align="center">
@@ -66,7 +64,7 @@
 
 <p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
 
----
+
 
 <a id="how-to-use"></a>
 <p align="center">
@@ -135,7 +133,7 @@ Block(theme="nord", animation="pop").title("Projects").text("...").save("assets/
 
 <p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
 
----
+
 
 <a id="building-a-block"></a>
 <a id="creating-a-block"></a>
@@ -266,7 +264,7 @@ Block(animation="slide-up", animation_loop=5)
 
 <p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
 
----
+
 
 <a id="customization"></a>
 <p align="center">
@@ -306,7 +304,7 @@ pip install -e .
 
 <p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
 
----
+
 
 <a id="themes"></a>
 <p align="center">
@@ -421,7 +419,7 @@ pip install -e .
 
 <p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
 
----
+
 
 <a id="troubleshooting"></a>
 <p align="center">
@@ -430,7 +428,7 @@ pip install -e .
 
 <p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
 
----
+
 
 <p align="center">
   <img src="assets/footer.svg" alt="Made with love for GitHub profiles" width="900">
