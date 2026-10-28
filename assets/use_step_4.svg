@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="206" viewBox="0 0 800 206"><style>
+@keyframes entry {
+  from { opacity: 0; } to { opacity: 1; transform: none; }
+}
+.entry {
+  animation: entry 0.8s ease-out both;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .entry { animation: none; }
+}
+</style><g class="entry"><defs><radialGradient id="background" cx="0.5" cy="0.5" r="0.7"><stop offset="0" stop-color="#121324"/><stop offset="1" stop-color="#080811"/></radialGradient><linearGradient id="border" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF0055"/><stop offset="1" stop-color="#7000FF"/></linearGradient></defs><rect x="1" y="1" width="798" height="204" rx="15" fill="url(#background)" stroke="none" stroke-width="2"/><rect x="1" y="1" width="798" height="204" rx="15" fill="none" stroke="url(#border)" stroke-width="2"/><g font-family="Arial, Helvetica, sans-serif"><rect x="24.0" y="27.0" width="4" height="24.0" rx="2" fill="#FF0055"/><text x="39.0" y="46.0" font-size="20" fill="#FF1F6E" font-weight="700">Step 4: Show the block in your profile</text><text x="24.0" y="81.6" font-size="16" fill="#F2F2FF">Add the HTML below to your profile README.md, set the width that best suits it, then <tspan fill="#00F0FF" font-weight="700">commit and push</tspan></text><text x="24.0" y="105.6" font-size="16" fill="#F2F2FF">both the .svg file and the change in the README.</text><rect x="24.0" y="122.0" width="752.0" height="2" rx="1" fill="#7000FF"/><text x="24.0" y="151.6" font-size="16" fill="#F2F2FF">The width in the HTML only resizes the image. The real size of the block is the width you passed to</text><text x="24.0" y="175.6" font-size="16" fill="#F2F2FF">Block(...). Use the same value, or a smaller one, so the text stays readable.</text></g></g></svg>

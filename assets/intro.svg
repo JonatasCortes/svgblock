@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="332" viewBox="0 0 800 332"><style>
+@keyframes entry {
+  from { opacity: 0; } to { opacity: 1; transform: none; }
+}
+.entry {
+  animation: entry 0.8s ease-out both;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .entry { animation: none; }
+}
+</style><g class="entry"><defs><radialGradient id="background" cx="0.5" cy="0.5" r="0.7"><stop offset="0" stop-color="#121324"/><stop offset="1" stop-color="#080811"/></radialGradient><linearGradient id="border" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF0055"/><stop offset="1" stop-color="#7000FF"/></linearGradient></defs><rect x="1" y="1" width="798" height="330" rx="15" fill="url(#background)" stroke="none" stroke-width="2"/><rect x="1" y="1" width="798" height="330" rx="15" fill="none" stroke="url(#border)" stroke-width="2"/><g font-family="Arial, Helvetica, sans-serif"><rect x="24.0" y="27.0" width="4" height="24.0" rx="2" fill="#FF0055"/><text x="39.0" y="46.0" font-size="20" fill="#FF1F6E" font-weight="700">Welcome to svgblock</text><text x="24.0" y="81.6" font-size="16" fill="#F2F2FF">Themed and animated text blocks, as <tspan fill="#00F0FF" font-weight="700">.svg</tspan> files, to make your GitHub profile README beautiful.</text><rect x="24.0" y="98.0" width="752.0" height="2" rx="1" fill="#7000FF"/><text x="24.0" y="127.6" font-size="16" fill="#F2F2FF">Do you want your profile README to look like a designed page, instead of plain Markdown text? Then</text><text x="24.0" y="151.6" font-size="16" fill="#F2F2FF">you are in the right place!</text><text x="24.0" y="185.6" font-size="16" fill="#F2F2FF">svgblock turns a few lines of Python into a single <tspan fill="#00F0FF" font-weight="700">.svg</tspan> image: a block with a gradient border, a glowing</text><text x="24.0" y="209.6" font-size="16" fill="#F2F2FF">background and an entrance animation. You pick a <tspan fill="#00F0FF" font-weight="700">theme</tspan> and an <tspan fill="#00F0FF" font-weight="700">animation</tspan>, and the library handles</text><text x="24.0" y="233.6" font-size="16" fill="#F2F2FF">colors, spacing, line breaks and the height of the block.</text><text x="24.0" y="267.6" font-size="16" fill="#F2F2FF">It is also as light as it can be: <tspan fill="#00F0FF" font-weight="700">plain Python, no external dependencies</tspan> (only the standard library).</text><text x="24.0" y="301.6" font-size="16" fill="#F2F2FF"><tspan fill="#C7B5FF" font-style="italic">Every block in this README was made with svgblock itself.</tspan></text></g></g></svg>
