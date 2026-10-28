@@ -1,7 +1,7 @@
 import re
 from dataclasses import dataclass
-from markup import TextSegment
-from width_guard import measure_text_width
+from svgblock.markup import TextSegment
+from svgblock.width_guard import measure_text_width
 
 _WORD_OR_SPACE = re.compile(r"\s+|\S+")
 

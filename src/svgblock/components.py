@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from xml.sax.saxutils import escape
 
-from .line_parser import wrap_into_lines
-from markup import TextSegment, parse_highlights
-from .themes import Theme
+from svgblock.line_parser import wrap_into_lines
+from svgblock.markup import TextSegment, parse_highlights
+from svgblock.themes import Theme
 
 LINE_HEIGHT_RATIO = 1.5
 BASELINE_RATIO = 1.1
