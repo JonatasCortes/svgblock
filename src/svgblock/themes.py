@@ -20,6 +20,10 @@ class Theme(TypedDict):
     table_stripe_background: str
     table_border: str
     divider: str
+    highlight: str
+    underline: str
+    strikethrough: str
+    italic: str
 
 
 THEMES: Final[dict[str, Theme]] = {
@@ -34,6 +38,6 @@ THEMES: Final[dict[str, Theme]] = {
         "text": "#FFB3B3", "highlight": "#FF6677", "table_background": "#140808", "table_header_background": "#2A0D10",
         "table_header_text": "#FF3344", "table_text": "#FFB3B3",
         "table_divider": "#4D1A1F", "table_stripe_background": "#1F0B0D",
-        "table_border": "#660008", "divider": "#B3202E",
+        "table_border": "#660008", "divider": "#B3202E", "underline": "#FF8A98", "strikethrough": "#B36B73", "italic": "#FFD1D1",
     }
 }

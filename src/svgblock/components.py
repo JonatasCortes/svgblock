@@ -4,7 +4,7 @@ from xml.sax.saxutils import escape
 
 from .image_reader import ImageData
 from .line_parser import wrap_into_lines
-from .markup import TextSegment, parse_highlights
+from .markup import Style, TextSegment, parse_markup
 from .themes import Theme
 
 LINE_HEIGHT_RATIO = 1.5
@@ -104,10 +104,9 @@ class Subsection:
 class Paragraph:
     text: str
     font_size: float
-    highlighted_words: tuple[str, ...] = ()
 
     def render(self, theme: Theme, left: float, top: float, width: float) -> RenderedComponent:
-        segments = parse_highlights(self.text, self.highlighted_words)
+        segments = parse_markup(self.text)
         lines = wrap_into_lines(segments, self.font_size, width)
         line_height = _line_height(self.font_size)
         svg = "".join(
@@ -116,7 +115,7 @@ class Paragraph:
                 baseline=_baseline(top + index * line_height, self.font_size),
                 font_size=self.font_size,
                 fill=theme["text"],
-                content=_segments_markup(line, theme["highlight"]),
+                content=_segments_markup(line, theme),
             )
             for index, line in enumerate(lines)
         )
@@ -155,7 +154,7 @@ def _baseline(top: float, font_size: float) -> float:
 
 
 def _wrap_bold_text(text: str, font_size: float, max_width: float) -> list[str]:
-    segments = [TextSegment(text=text, highlighted=False)]
+    segments = [TextSegment(text=text)]
     lines = wrap_into_lines(segments, font_size, max_width, bold=True)
     return ["".join(segment.text for segment in line) for line in lines] or [""]
 
@@ -195,13 +194,44 @@ def _text_element(
     )
 
 
-def _segments_markup(segments: list[TextSegment], highlight_color: str) -> str:
-    return "".join(
-        f'<tspan fill="{highlight_color}" font-weight="{BOLD_WEIGHT}">{escape(segment.text)}</tspan>'
-        if segment.highlighted
-        else escape(segment.text)
-        for segment in segments
-    )
+def _segments_markup(segments: list[TextSegment], theme: Theme) -> str:
+    return "".join(_segment_markup(segment, theme) for segment in segments)
+
+
+def _segment_markup(segment: TextSegment, theme: Theme) -> str:
+    content = escape(segment.text)
+    if not segment.styles:
+        return content
+
+    innermost_style = segment.styles[-1]
+    attributes = [f'fill="{_style_color(theme, innermost_style)}"']
+    if segment.is_bold:
+        attributes.append(f'font-weight="{BOLD_WEIGHT}"')
+    if Style.ITALIC in segment.styles:
+        attributes.append('font-style="italic"')
+    decorations = _text_decorations(segment.styles)
+    if decorations:
+        attributes.append(f'text-decoration="{decorations}"')
+    return f'<tspan {" ".join(attributes)}>{content}</tspan>'
+
+
+def _style_color(theme: Theme, style: Style) -> str:
+    colors: dict[Style, str] = {
+        Style.HIGHLIGHT: theme["highlight"],
+        Style.UNDERLINE: theme["underline"],
+        Style.STRIKETHROUGH: theme["strikethrough"],
+        Style.ITALIC: theme["italic"],
+    }
+    return colors[style]
+
+
+def _text_decorations(styles: tuple[Style, ...]) -> str:
+    decorations: list[str] = []
+    if Style.UNDERLINE in styles:
+        decorations.append("underline")
+    if Style.STRIKETHROUGH in styles:
+        decorations.append("line-through")
+    return " ".join(decorations)
 
 
 def format_cell_value(value: CellValue) -> str:
@@ -266,10 +296,10 @@ class Table:
         return RenderedComponent(svg=svg, height=height)
 
     def _body_cell(self, text: str, theme: Theme, column_width: float) -> list[str]:
-        segments = parse_highlights(text, self.highlighted_words)
+        segments = parse_markup(text)
         lines = wrap_into_lines(segments, self.font_size,
                                 column_width - 2 * self.cell_padding)
-        return [_segments_markup(line, theme["highlight"]) for line in lines]
+        return [_segments_markup(line, theme) for line in lines]
 
     def _row_height(self, row: list[list[str]]) -> float:
         line_count = max([1, *(len(cell) for cell in row)])

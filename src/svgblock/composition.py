@@ -36,13 +36,8 @@ class Composer:
         self._components.append(Subsection(text, font_size))
         return self
 
-    def text(
-        self: _Self,
-        text: str,
-        font_size: float = TEXT_FONT_SIZE,
-        highlight: Sequence[str] = (),
-    ) -> _Self:
-        self._components.append(Paragraph(text, font_size, tuple(highlight)))
+    def text(self: _Self, text: str, font_size: float = TEXT_FONT_SIZE) -> _Self:
+        self._components.append(Paragraph(text, font_size))
         return self
 
     def image(
@@ -73,7 +68,6 @@ class Composer:
         striped: bool = True,
         row_dividers: bool = True,
         column_dividers: bool = False,
-        highlight: Sequence[str] = (),
     ) -> _Self:
         if not columns:
             raise ValueError("table() needs at least one column.")
@@ -111,7 +105,6 @@ class Composer:
                 striped=striped,
                 row_dividers=row_dividers,
                 column_dividers=column_dividers,
-                highlighted_words=tuple(highlight),
             )
         )
         return self

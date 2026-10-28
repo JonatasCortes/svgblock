@@ -42,7 +42,7 @@ def _split_into_words(segments: list[TextSegment]) -> list[_Word]:
     pieces: list[TextSegment] = []
     for segment in segments:
         for part in _WORD_OR_SPACE.findall(segment.text):
-            piece = TextSegment(text=part, highlighted=segment.highlighted)
+            piece = TextSegment(text=part, styles=segment.styles)
             if not part.isspace():
                 pieces.append(piece)
             elif pieces:
@@ -58,7 +58,7 @@ def _break_oversized_word(
 ) -> list[_Word]:
     word_width = sum(
         measure_text_width(piece.text, font_size,
-                           bold=bold or piece.highlighted)
+                           bold=bold or piece.is_bold)
         for piece in word.pieces
     )
     if word_width <= max_width:
@@ -70,14 +70,13 @@ def _break_oversized_word(
     for piece in word.pieces:
         for character in piece.text:
             character_width = measure_text_width(
-                character, font_size, bold=bold or piece.highlighted
+                character, font_size, bold=bold or piece.is_bold
             )
             if current and current_width + character_width > max_width:
                 fragments.append(current)
                 current = []
                 current_width = 0.0
-            current.append(TextSegment(
-                text=character, highlighted=piece.highlighted))
+            current.append(TextSegment(text=character, styles=piece.styles))
             current_width += character_width
     fragments.append(current)
 
@@ -102,9 +101,9 @@ def _flatten_line(words: list[_Word]) -> list[TextSegment]:
 def _merge_adjacent_segments(segments: list[TextSegment]) -> list[TextSegment]:
     merged: list[TextSegment] = []
     for segment in segments:
-        if merged and merged[-1].highlighted == segment.highlighted:
+        if merged and merged[-1].styles == segment.styles:
             merged[-1] = TextSegment(
-                merged[-1].text + segment.text, segment.highlighted
+                merged[-1].text + segment.text, segment.styles
             )
         else:
             merged.append(segment)
@@ -114,6 +113,6 @@ def _merge_adjacent_segments(segments: list[TextSegment]) -> list[TextSegment]:
 def _measure_line(words: list[_Word], font_size: float, bold: bool) -> float:
     return sum(
         measure_text_width(segment.text, font_size,
-                           bold=bold or segment.highlighted)
+                           bold=bold or segment.is_bold)
         for segment in _flatten_line(words)
     )

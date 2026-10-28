@@ -1,68 +1,90 @@
-import re
-from collections.abc import Sequence
 from dataclasses import dataclass
+from enum import Enum
 
-HIGHLIGHT_MARKER = "**"
+
+class Style(Enum):
+    HIGHLIGHT = "highlight"
+    UNDERLINE = "underline"
+    STRIKETHROUGH = "strikethrough"
+    ITALIC = "italic"
+
+
+MARKERS: dict[str, Style] = {
+    "**": Style.HIGHLIGHT,
+    "__": Style.UNDERLINE,
+    "--": Style.STRIKETHROUGH,
+    "##": Style.ITALIC,
+}
 ESCAPE_CHARACTER = "\\"
-ESCAPED_ASTERISK = ESCAPE_CHARACTER + "*"
+ESCAPABLE_CHARACTERS = frozenset("".join(MARKERS) + ESCAPE_CHARACTER)
 
-_UNESCAPED_MARKER = re.compile(
-    rf"(?<!{re.escape(ESCAPE_CHARACTER)}){re.escape(HIGHLIGHT_MARKER)}"
-)
+_MARKERS_LONGEST_FIRST = sorted(
+    MARKERS, key=len, reverse=True)
+_MARKER_OF_STYLE = {style: marker for marker, style in MARKERS.items()}
 
 
 @dataclass(frozen=True)
 class TextSegment:
     text: str
-    highlighted: bool
+    styles: tuple[Style, ...] = ()
+
+    @property
+    def is_bold(self) -> bool:
+        return Style.HIGHLIGHT in self.styles
 
 
-def parse_highlights(text: str, highlighted_words: Sequence[str] = ()) -> list[TextSegment]:
-    segments = _parse_marked_highlights(text)
-    return _highlight_words(segments, highlighted_words)
+def parse_markup(text: str) -> list[TextSegment]:
+    segments: list[TextSegment] = []
+    active_styles: list[Style] = []
+    pending_characters: list[str] = []
+    index = 0
 
+    while index < len(text):
+        character = text[index]
+        next_character = text[index + 1] if index + 1 < len(text) else ""
 
-def _parse_marked_highlights(text: str) -> list[TextSegment]:
-    parts = _UNESCAPED_MARKER.split(text)
-    if len(parts) % 2 == 0:
+        if character == ESCAPE_CHARACTER and next_character in ESCAPABLE_CHARACTERS:
+            pending_characters.append(next_character)
+            index += 2
+            continue
+
+        marker = _marker_at(text, index)
+        if marker is None:
+            pending_characters.append(character)
+            index += 1
+            continue
+
+        _close_segment(segments, pending_characters, active_styles)
+        _toggle(active_styles, MARKERS[marker])
+        index += len(marker)
+
+    if active_styles:
+        marker = _MARKER_OF_STYLE[active_styles[0]]
         raise ValueError(
-            f"Unclosed highlight marker '{HIGHLIGHT_MARKER}' in: {text!r}")
-    return [
-        TextSegment(text=part.replace(ESCAPED_ASTERISK, "*"),
-                    highlighted=index % 2 == 1)
-        for index, part in enumerate(parts)
-        if part
-    ]
+            f"Unclosed marker '{marker}' in: {text!r} "
+            f"(use {ESCAPE_CHARACTER}{marker[0]} for a literal one)")
+    _close_segment(segments, pending_characters, active_styles)
+    return segments
 
 
-def _highlight_words(
-    segments: list[TextSegment], highlighted_words: Sequence[str]
-) -> list[TextSegment]:
-    word_pattern = _build_word_pattern(highlighted_words)
-    if word_pattern is None:
-        return segments
-
-    result: list[TextSegment] = []
-    for segment in segments:
-        if segment.highlighted:
-            result.append(segment)
-        else:
-            result.extend(_split_by_words(segment.text, word_pattern))
-    return result
+def _marker_at(text: str, index: int) -> str | None:
+    for marker in _MARKERS_LONGEST_FIRST:
+        if text.startswith(marker, index):
+            return marker
+    return None
 
 
-def _build_word_pattern(highlighted_words: Sequence[str]) -> re.Pattern[str] | None:
-    longest_first = sorted(
-        {word for word in highlighted_words if word}, key=len, reverse=True)
-    if not longest_first:
-        return None
-    return re.compile("(" + "|".join(re.escape(word) for word in longest_first) + ")")
+def _close_segment(
+    segments: list[TextSegment], pending_characters: list[str], active_styles: list[Style]
+) -> None:
+    if pending_characters:
+        segments.append(TextSegment(
+            "".join(pending_characters), tuple(active_styles)))
+        pending_characters.clear()
 
 
-def _split_by_words(text: str, word_pattern: re.Pattern[str]) -> list[TextSegment]:
-    parts = word_pattern.split(text)
-    return [
-        TextSegment(text=part, highlighted=index % 2 == 1)
-        for index, part in enumerate(parts)
-        if part
-    ]
+def _toggle(active_styles: list[Style], style: Style) -> None:
+    if style in active_styles:
+        active_styles.remove(style)
+    else:
+        active_styles.append(style)
