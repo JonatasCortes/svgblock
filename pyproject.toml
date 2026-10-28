@@ -1,21 +1,21 @@
 [build-system]
-requires = ["setuptools>=61"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "svgblock"
 version = "0.1.0"
-description = "Generate themed SVG text blocks with animated entrances for GitHub profile READMEs."
+description = "Generate themed SVG text blocks with animated entrances."
 readme = "README.md"
 requires-python = ">=3.10"
+license = "MIT"
 dependencies = []
 keywords = ["svg", "readme", "github", "profile", "text"]
 
 [tool.setuptools]
-packages = ["svgblock"]
-
-[tool.setuptools.package-data]
-svgblock = ["py.typed"]
-
-license = "MIT"
+package-dir = {"" = "src"}
 license-files = ["LICENSE"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["svgblock", "svgblock.*"]
