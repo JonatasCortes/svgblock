@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "svgblock"
+version = "0.1.0"
+description = "Generate themed SVG text blocks with animated entrances for GitHub profile READMEs."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+keywords = ["svg", "readme", "github", "profile", "text"]
+
+[tool.setuptools]
+packages = ["svgblock"]
