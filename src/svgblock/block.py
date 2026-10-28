@@ -1,13 +1,18 @@
 from pathlib import Path
 
-from .animations import ENTRY_CLASS_NAME, Animation, build_animation_css
+from .animations import (
+    ENTRY_CLASS_NAME,
+    Animation,
+    build_animation_css,
+    validate_animation_loop,
+)
 from .composition import Composer
 from .frame import build_frame
 from .themes import THEMES, Theme
 
 DEFAULT_THEME_NAME = "red"
 DEFAULT_WIDTH = 800
-DEFAULT_ANIMATION = Animation.FADE
+DEFAULT_ANIMATION = None
 
 BLOCK_PADDING = 24
 
@@ -15,17 +20,24 @@ FONT_FAMILY = "Arial, Helvetica, sans-serif"
 
 
 class Block(Composer):
+
     def __init__(
         self,
         theme: str = DEFAULT_THEME_NAME,
         width: float = DEFAULT_WIDTH,
-        animation: Animation | str = DEFAULT_ANIMATION,
+        animation: Animation | str | None = DEFAULT_ANIMATION,
         frame: bool = True,
+        animation_loop: float | None = None,
     ) -> None:
         super().__init__()
         self._theme = _find_theme(theme)
         self._width = width
         self._animation = _parse_animation(animation)
+        if animation_loop is not None and self._animation is None:
+            raise ValueError(
+                "animation_loop needs an animation. Pass animation=... too.")
+        validate_animation_loop(animation_loop)
+        self._animation_loop = animation_loop
         self._frame = frame
 
     def render(self) -> str:
@@ -39,11 +51,19 @@ class Block(Composer):
             build_frame(self._theme, self._width,
                         height) if self._frame else ""
         )
+        if self._animation is None:
+            style = ""
+            open_group = "<g>"
+        else:
+            css = build_animation_css(self._animation, self._animation_loop)
+            style = f"<style>{css}</style>"
+            open_group = f'<g class="{ENTRY_CLASS_NAME}">'
+
         return (
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{self._width:g}" '
             f'height="{height:g}" viewBox="0 0 {self._width:g} {height:g}">'
-            f"<style>{build_animation_css(self._animation)}</style>"
-            f'<g class="{ENTRY_CLASS_NAME}">'
+            f"{style}"
+            f"{open_group}"
             f"{frame_markup}"
             f'<g font-family="{FONT_FAMILY}">{rendered.svg}</g>'
             "</g></svg>"
@@ -63,7 +83,9 @@ def _find_theme(name: str) -> Theme:
             f"Unknown theme {name!r}. Available: {', '.join(THEMES)}") from None
 
 
-def _parse_animation(animation: Animation | str) -> Animation:
+def _parse_animation(animation: Animation | str | None) -> Animation | None:
+    if animation is None:
+        return None
     try:
         return Animation(animation)
     except ValueError:

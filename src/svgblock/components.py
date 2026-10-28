@@ -433,7 +433,7 @@ def _cell_lines_markup(
 
 
 DIVIDER_THICKNESS = 2
-DIVIDER_COVERAGE = 0.6
+DIVIDER_COVERAGE = 1
 
 
 @dataclass(frozen=True)

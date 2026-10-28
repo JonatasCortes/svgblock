@@ -28,14 +28,38 @@ _START_STATES: dict[Animation, str] = {
 _END_STATE = "opacity: 1; transform: none;"
 
 
-def build_animation_css(animation: Animation) -> str:
+def validate_animation_loop(animation_loop: float | None) -> None:
+    if animation_loop is None:
+        return
+    if animation_loop <= ANIMATION_DURATION_SECONDS:
+        raise ValueError(
+            f"animation_loop must be greater than {ANIMATION_DURATION_SECONDS} "
+            f"seconds (the duration of the animation), got {animation_loop!r}."
+        )
+
+
+def build_animation_css(animation: Animation, loop: float | None = None) -> str:
+    if loop is None:
+        keyframes = (
+            f"from {{ {_START_STATES[animation]} }} "
+            f"to {{ {_END_STATE} }}"
+        )
+        rule = f"animation: entry {ANIMATION_DURATION_SECONDS}s ease-out both;"
+    else:
+        percent = ANIMATION_DURATION_SECONDS / loop * 100
+        keyframes = (
+            f"0% {{ {_START_STATES[animation]} }} "
+            f"{percent:.3f}% {{ {_END_STATE} }} "
+            f"100% {{ {_END_STATE} }}"
+        )
+        rule = f"animation: entry {loop:g}s ease-out infinite;"
+
     return f"""
 @keyframes entry {{
-  from {{ {_START_STATES[animation]} }}
-  to {{ {_END_STATE} }}
+  {keyframes}
 }}
 .{ENTRY_CLASS_NAME} {{
-  animation: entry {ANIMATION_DURATION_SECONDS}s ease-out both;
+  {rule}
   transform-box: fill-box;
   transform-origin: center;
 }}
