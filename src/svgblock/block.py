@@ -57,7 +57,7 @@ class Block(Composer):
 
 def _find_theme(name: str) -> Theme:
     try:
-        return THEMES[name.replace(" ", "").replace("-", "").replace("_", "")]
+        return THEMES[name.lower().replace(" ", "").replace("-", "").replace("_", "")]
     except KeyError:
         raise ValueError(
             f"Unknown theme {name!r}. Available: {', '.join(THEMES)}") from None
