@@ -5,9 +5,9 @@ from typing import TypeVar
 from .image_reader import read_image
 from .themes import Theme
 from .components import (
-    TABLE_BORDER_RADIUS, TABLE_CELL_PADDING, TABLE_FONT_SIZE,
+    DIVIDER_COVERAGE, TABLE_BORDER_RADIUS, TABLE_CELL_PADDING, TABLE_FONT_SIZE,
     Alignment, CellValue, Component, Image, Paragraph, RenderedComponent,
-    Subsection, Table, Title, format_cell_value,
+    Subsection, Table, Title, Divider, format_cell_value,
 )
 
 TITLE_FONT_SIZE = 20
@@ -114,6 +114,13 @@ class Composer:
                 highlighted_words=tuple(highlight),
             )
         )
+        return self
+
+    def divider(self: _Self, coverage: float = DIVIDER_COVERAGE) -> _Self:
+        if not 0 < coverage <= 1:
+            raise ValueError(
+                f"Divider coverage must be between 0 and 1, got {coverage!r}.")
+        self._components.append(Divider(coverage))
         return self
 
     def _render_components(

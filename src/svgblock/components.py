@@ -400,3 +400,22 @@ def _cell_lines_markup(
         )
         for index, content in enumerate(contents)
     )
+
+
+DIVIDER_THICKNESS = 2
+DIVIDER_COVERAGE = 0.6
+
+
+@dataclass(frozen=True)
+class Divider:
+    coverage: float
+
+    def render(self, theme: Theme, left: float, top: float, width: float) -> RenderedComponent:
+        line_width = width * self.coverage
+        line_left = left + (width - line_width) / 2
+        svg = (
+            f'<rect x="{line_left:.1f}" y="{top:.1f}" width="{line_width:.1f}" '
+            f'height="{DIVIDER_THICKNESS}" rx="{DIVIDER_THICKNESS / 2:g}" '
+            f'fill="{theme["divider"]}"/>'
+        )
+        return RenderedComponent(svg=svg, height=DIVIDER_THICKNESS)
