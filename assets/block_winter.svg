@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="249.5" viewBox="0 0 500 249.5"><style>
+@keyframes entry {
+  from { opacity: 0; transform: translateY(-24px); }
+  to { opacity: 1; transform: none; }
+}
+.entry {
+  animation: entry 0.8s ease-out both;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .entry { animation: none; }
+}
+</style><g class="entry"><defs><radialGradient id="background" cx="0.5" cy="0.5" r="0.7"><stop offset="0" stop-color="#172033"/><stop offset="1" stop-color="#0D1321"/></radialGradient><linearGradient id="border" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7DD3FC"/><stop offset="1" stop-color="#1E293B"/></linearGradient></defs><rect x="1" y="1" width="498" height="247.5" rx="15" fill="url(#background)" stroke="none" stroke-width="2"/><rect x="1" y="1" width="498" height="247.5" rx="15" fill="none" stroke="url(#border)" stroke-width="2"/><g font-family="Arial, Helvetica, sans-serif"><rect x="24.0" y="27.0" width="4" height="24.0" rx="2" fill="#38A3E0"/><text x="39.0" y="46.0" font-size="20" fill="#7DD3FC" font-weight="700">MAKE YOUR CUSTOM SVG BLOCKS</text><text x="24.0" y="81.6" font-size="16" fill="#F1F5F9">write beautyfull components for your <tspan fill="#E0F2FE" font-weight="700">README.md</tspan>.</text><text x="24.0" y="120.0" font-size="20" fill="#F1F5F9">make texts bigger...</text><text x="24.0" y="151.2" font-size="12" fill="#F1F5F9">or smaller...</text><circle cx="27.1" cy="178.8" r="3.1" fill="#366480"/><text x="38.1" y="184.7" font-size="17" fill="#CBD5E1" font-weight="700">Add subsections</text><text x="24.0" y="219.1" font-size="16" fill="#F1F5F9">test different themes and animations, be free to enjoy!</text></g></g></svg>
