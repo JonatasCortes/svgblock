@@ -1,0 +1,103 @@
+from collections.abc import Sequence
+from typing import TypeVar
+
+from .components import Component, Paragraph, RenderedComponent, Subsection, Title
+from .themes import Theme
+
+TITLE_FONT_SIZE = 20
+SUBSECTION_FONT_SIZE = 17
+TEXT_FONT_SIZE = 16
+
+COMPONENT_GAP = 10
+COLUMN_GAP = 24
+
+DEFAULT_COLUMN_WEIGHT = 1
+
+_Self = TypeVar("_Self", bound="Composer")
+
+
+class Composer:
+    def __init__(self) -> None:
+        self._components: list[Component] = []
+
+    def title(self: _Self, text: str, font_size: float = TITLE_FONT_SIZE) -> _Self:
+        self._components.append(Title(text, font_size))
+        return self
+
+    def subsection(
+        self: _Self, text: str, font_size: float = SUBSECTION_FONT_SIZE
+    ) -> _Self:
+        self._components.append(Subsection(text, font_size))
+        return self
+
+    def text(
+        self: _Self,
+        text: str,
+        font_size: float = TEXT_FONT_SIZE,
+        highlight: Sequence[str] = (),
+    ) -> _Self:
+        self._components.append(Paragraph(text, font_size, tuple(highlight)))
+        return self
+
+    def columns(self: _Self, *columns: "Column") -> _Self:
+        if not columns:
+            raise ValueError("columns() needs at least one Column.")
+        self._components.append(_Columns(columns))
+        return self
+
+    def _render_components(
+        self, theme: Theme, left: float, top: float, width: float
+    ) -> RenderedComponent:
+        parts: list[str] = []
+        current_top = top
+        for index, component in enumerate(self._components):
+            if index > 0:
+                current_top += COMPONENT_GAP
+            rendered = component.render(theme, left, current_top, width)
+            parts.append(rendered.svg)
+            current_top += rendered.height
+        return RenderedComponent(svg="".join(parts), height=current_top - top)
+
+
+class Column(Composer):
+    def __init__(self, weight: float = DEFAULT_COLUMN_WEIGHT) -> None:
+        super().__init__()
+        if weight <= 0:
+            raise ValueError(
+                f"Column weight must be greater than zero, got {weight!r}.")
+        self._weight = weight
+
+    @property
+    def weight(self) -> float:
+        return self._weight
+
+    def render(
+        self, theme: Theme, left: float, top: float, width: float
+    ) -> RenderedComponent:
+        return self._render_components(theme, left, top, width)
+
+
+class _Columns(Component):
+    def __init__(self, columns: Sequence[Column]) -> None:
+        self._columns = tuple(columns)
+
+    def render(
+        self, theme: Theme, left: float, top: float, width: float
+    ) -> RenderedComponent:
+        available_width = width - COLUMN_GAP * (len(self._columns) - 1)
+        total_weight = sum(column.weight for column in self._columns)
+
+        parts: list[str] = []
+        column_left = left
+        row_height = 0.0
+
+        for column in self._columns:
+            column_width = available_width * column.weight / total_weight
+
+            rendered = column.render(theme, column_left, top, column_width)
+
+            parts.append(rendered.svg)
+            row_height = max(row_height, rendered.height)
+            column_left += column_width + COLUMN_GAP
+
+        return RenderedComponent(svg="".join(parts), height=row_height)

@@ -1,8 +1,7 @@
-from collections.abc import Sequence
 from pathlib import Path
 
 from .animations import ENTRY_CLASS_NAME, Animation, build_animation_css
-from .components import Component, Paragraph, Subsection, Title
+from .composition import Composer
 from .frame import build_frame
 from .themes import THEMES, Theme
 
@@ -10,55 +9,36 @@ DEFAULT_THEME_NAME = "red"
 DEFAULT_WIDTH = 800
 DEFAULT_ANIMATION = Animation.FADE
 
-TITLE_FONT_SIZE = 20
-SUBSECTION_FONT_SIZE = 17
-TEXT_FONT_SIZE = 16
-
 BLOCK_PADDING = 24
-COMPONENT_GAP = 10
 
 FONT_FAMILY = "Arial, Helvetica, sans-serif"
 
 
-class Block:
+class Block(Composer):
     def __init__(
         self,
         theme: str = DEFAULT_THEME_NAME,
         width: float = DEFAULT_WIDTH,
         animation: Animation | str = DEFAULT_ANIMATION,
     ) -> None:
+        super().__init__()
         self._theme = _find_theme(theme)
         self._width = width
         self._animation = _parse_animation(animation)
-        self._components: list[Component] = []
-
-    def title(self, text: str, font_size: float = TITLE_FONT_SIZE) -> "Block":
-        self._components.append(Title(text, font_size))
-        return self
-
-    def subsection(self, text: str, font_size: float = SUBSECTION_FONT_SIZE) -> "Block":
-        self._components.append(Subsection(text, font_size))
-        return self
-
-    def text(
-        self,
-        text: str,
-        font_size: float = TEXT_FONT_SIZE,
-        highlight: Sequence[str] = (),
-    ) -> "Block":
-        self._components.append(Paragraph(text, font_size, tuple(highlight)))
-        return self
 
     def render(self) -> str:
-        content, content_height = self._render_components()
-        height = content_height + BLOCK_PADDING
+        content_width = self._width - 2 * BLOCK_PADDING
+        rendered = self._render_components(
+            self._theme, BLOCK_PADDING, BLOCK_PADDING, content_width
+        )
+        height = rendered.height + 2 * BLOCK_PADDING
         return (
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{self._width:g}" '
             f'height="{height:g}" viewBox="0 0 {self._width:g} {height:g}">'
             f"<style>{build_animation_css(self._animation)}</style>"
             f'<g class="{ENTRY_CLASS_NAME}">'
             f"{build_frame(self._theme, self._width, height)}"
-            f'<g font-family="{FONT_FAMILY}">{content}</g>'
+            f'<g font-family="{FONT_FAMILY}">{rendered.svg}</g>'
             "</g></svg>"
         )
 
@@ -66,19 +46,6 @@ class Block:
         file_path = Path(path)
         file_path.parent.mkdir(parents=True, exist_ok=True)
         file_path.write_text(self.render(), encoding="utf-8")
-
-    def _render_components(self) -> tuple[str, float]:
-        content_width = self._width - 2 * BLOCK_PADDING
-        top = BLOCK_PADDING
-        parts: list[str] = []
-        for index, component in enumerate(self._components):
-            if index > 0:
-                top += COMPONENT_GAP
-            rendered = component.render(
-                self._theme, BLOCK_PADDING, top, content_width)
-            parts.append(rendered.svg)
-            top += rendered.height
-        return "".join(parts), top
 
 
 def _find_theme(name: str) -> Theme:

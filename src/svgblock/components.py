@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Protocol
 from xml.sax.saxutils import escape
 
 from .line_parser import wrap_into_lines
@@ -23,6 +24,12 @@ class RenderedComponent:
     height: float
 
 
+class Component(Protocol):
+    def render(
+        self, theme: Theme, left: float, top: float, width: float
+    ) -> RenderedComponent: ...
+
+
 @dataclass(frozen=True)
 class Title:
     text: str
@@ -30,21 +37,24 @@ class Title:
 
     def render(self, theme: Theme, left: float, top: float, width: float) -> RenderedComponent:
         line_height = _line_height(self.font_size)
-        bar_height = self.font_size * TITLE_BAR_HEIGHT_RATIO
-        bar_top = top + (line_height - bar_height) / 2
+        text_offset = TITLE_BAR_WIDTH + TITLE_BAR_GAP
+        lines = _wrap_bold_text(self.text, self.font_size, width - text_offset)
+
+        single_bar_height = self.font_size * TITLE_BAR_HEIGHT_RATIO
+        bar_top = top + (line_height - single_bar_height) / 2
+        bar_height = single_bar_height + (len(lines) - 1) * line_height
         bar = (
             f'<rect x="{left:.1f}" y="{bar_top:.1f}" width="{TITLE_BAR_WIDTH}" '
             f'height="{bar_height:.1f}" rx="{TITLE_BAR_WIDTH / 2:g}" fill="{theme["title_bar"]}"/>'
         )
-        text = _text_element(
-            x=left + TITLE_BAR_WIDTH + TITLE_BAR_GAP,
-            baseline=_baseline(top, self.font_size),
+        text = _bold_lines_markup(
+            lines,
+            x=left + text_offset,
+            top=top,
             font_size=self.font_size,
             fill=theme["title_text"],
-            content=escape(self.text),
-            bold=True,
         )
-        return RenderedComponent(svg=bar + text, height=line_height)
+        return RenderedComponent(svg=bar + text, height=len(lines) * line_height)
 
 
 @dataclass(frozen=True)
@@ -55,19 +65,21 @@ class Subsection:
     def render(self, theme: Theme, left: float, top: float, width: float) -> RenderedComponent:
         line_height = _line_height(self.font_size)
         radius = self.font_size * SUBSECTION_MARKER_RADIUS_RATIO
+        text_offset = 2 * radius + SUBSECTION_MARKER_GAP
+        lines = _wrap_bold_text(self.text, self.font_size, width - text_offset)
+
         marker = (
             f'<circle cx="{left + radius:.1f}" cy="{top + line_height / 2:.1f}" '
             f'r="{radius:.1f}" fill="{theme["subsection_marker"]}"/>'
         )
-        text = _text_element(
-            x=left + 2 * radius + SUBSECTION_MARKER_GAP,
-            baseline=_baseline(top, self.font_size),
+        text = _bold_lines_markup(
+            lines,
+            x=left + text_offset,
+            top=top,
             font_size=self.font_size,
             fill=theme["subsection_text"],
-            content=escape(self.text),
-            bold=True,
         )
-        return RenderedComponent(svg=marker + text, height=line_height)
+        return RenderedComponent(svg=marker + text, height=len(lines) * line_height)
 
 
 @dataclass(frozen=True)
@@ -93,15 +105,36 @@ class Paragraph:
         return RenderedComponent(svg=svg, height=len(lines) * line_height)
 
 
-Component = Title | Subsection | Paragraph
-
-
 def _line_height(font_size: float) -> float:
     return font_size * LINE_HEIGHT_RATIO
 
 
 def _baseline(top: float, font_size: float) -> float:
     return top + font_size * BASELINE_RATIO
+
+
+def _wrap_bold_text(text: str, font_size: float, max_width: float) -> list[str]:
+    segments = [TextSegment(text=text, highlighted=False)]
+    lines = wrap_into_lines(segments, font_size, max_width, bold=True)
+    return ["".join(segment.text for segment in line) for line in lines] or [""]
+
+
+def _bold_lines_markup(
+    lines: list[str], x: float, top: float, font_size: float, fill: str
+) -> str:
+    line_height = _line_height(font_size)
+    return "".join(
+        _text_element(
+            x=x,
+            baseline=_baseline(top + index * line_height, font_size),
+            font_size=font_size,
+            fill=fill,
+            content=escape(line),
+            bold=True,
+        )
+        for index, line in enumerate(lines)
+        if line
+    )
 
 
 def _text_element(
