@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Protocol
 from xml.sax.saxutils import escape
 
+from .image_reader import ImageData
 from .line_parser import wrap_into_lines
 from .markup import TextSegment, parse_highlights
 from .themes import Theme
@@ -103,6 +104,29 @@ class Paragraph:
             for index, line in enumerate(lines)
         )
         return RenderedComponent(svg=svg, height=len(lines) * line_height)
+
+
+@dataclass(frozen=True)
+class Image:
+    image: ImageData
+    requested_width: float | None = None
+
+    def render(self, theme: Theme, left: float, top: float, width: float) -> RenderedComponent:
+        target_width = (
+            self.requested_width
+            if self.requested_width is not None
+            else self.image.width
+        )
+        final_width = min(target_width, width)
+        if final_width <= 0:
+            return RenderedComponent(svg="", height=0)
+
+        final_height = final_width * self.image.height / self.image.width
+        svg = (
+            f'<image x="{left:.1f}" y="{top:.1f}" width="{final_width:.1f}" '
+            f'height="{final_height:.1f}" href="{self.image.data_uri}"/>'
+        )
+        return RenderedComponent(svg=svg, height=final_height)
 
 
 def _line_height(font_size: float) -> float:

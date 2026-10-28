@@ -1,7 +1,9 @@
 from collections.abc import Sequence
+from pathlib import Path
 from typing import TypeVar
 
-from .components import Component, Paragraph, RenderedComponent, Subsection, Title
+from .components import Component, Image, Paragraph, RenderedComponent, Subsection, Title
+from .image_reader import read_image
 from .themes import Theme
 
 TITLE_FONT_SIZE = 20
@@ -37,6 +39,15 @@ class Composer:
         highlight: Sequence[str] = (),
     ) -> _Self:
         self._components.append(Paragraph(text, font_size, tuple(highlight)))
+        return self
+
+    def image(
+        self: _Self, path: str | Path, width: float | None = None
+    ) -> _Self:
+        if width is not None and width <= 0:
+            raise ValueError(
+                f"Image width must be greater than zero, got {width!r}.")
+        self._components.append(Image(read_image(path), width))
         return self
 
     def columns(self: _Self, *columns: "Column") -> _Self:
