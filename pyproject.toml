@@ -16,3 +16,6 @@ packages = ["svgblock"]
 
 [tool.setuptools.package-data]
 svgblock = ["py.typed"]
+
+license = "MIT"
+license-files = ["LICENSE"]
