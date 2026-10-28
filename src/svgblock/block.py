@@ -1,10 +1,10 @@
 from collections.abc import Sequence
 from pathlib import Path
 
-from svgblock.animations import ENTRY_CLASS_NAME, Animation, build_animation_css
-from svgblock.components import Component, Paragraph, Subsection, Title
-from svgblock.frame import build_frame
-from svgblock.themes import THEMES, Theme
+from .animations import ENTRY_CLASS_NAME, Animation, build_animation_css
+from .components import Component, Paragraph, Subsection, Title
+from .frame import build_frame
+from .themes import THEMES, Theme
 
 DEFAULT_THEME_NAME = "red"
 DEFAULT_WIDTH = 800
@@ -83,7 +83,7 @@ class Block:
 
 def _find_theme(name: str) -> Theme:
     try:
-        return THEMES[name]
+        return THEMES[name.replace(" ", "").replace("-", "").replace("_", "")]
     except KeyError:
         raise ValueError(
             f"Unknown theme {name!r}. Available: {', '.join(THEMES)}") from None

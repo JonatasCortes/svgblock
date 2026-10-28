@@ -13,3 +13,6 @@ keywords = ["svg", "readme", "github", "profile", "text"]
 
 [tool.setuptools]
 packages = ["svgblock"]
+
+[tool.setuptools.package-data]
+svgblock = ["py.typed"]

@@ -1,4 +1,4 @@
-from svgblock.themes import Theme
+from .themes import Theme
 
 BACKGROUND_GRADIENT_ID = "background"
 BORDER_GRADIENT_ID = "border"
