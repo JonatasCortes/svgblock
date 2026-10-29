@@ -3,6 +3,7 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/pypi/v/svgblock?color=3776AB&logo=pypi&logoColor=white" alt="PyPI version">
   <img src="https://img.shields.io/badge/python-3.10+-3776AB?logo=python&logoColor=white" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/dependencies-none-2ea44f" alt="No dependencies">
   <img src="https://img.shields.io/badge/themes-50-ff0055" alt="50 themes">
@@ -14,8 +15,8 @@
   <img src="assets/intro.svg" alt="What svgblock does" width="900">
 </p>
 
-
 <a id="table-of-contents"></a>
+
 <p align="center">
   <img src="assets/toc.svg" alt="Table of Contents" width="900">
 </p>
@@ -47,26 +48,25 @@
       <li><a href="#2-light-colors-pastels">2. Light Colors (Pastels)</a></li>
       <li><a href="#3-seasons">3. Seasons</a></li>
       <li><a href="#4-drinks">4. Drinks</a></li>
-      <li><a href="#5-countries--geography">5. Countries &amp; Geography</a></li>
-      <li><a href="#6-aesthetics--culture">6. Aesthetics &amp; Culture</a></li>
+      <li><a href="#5-countries--geography">5. Countries & Geography</a></li>
+      <li><a href="#6-aesthetics--culture">6. Aesthetics & Culture</a></li>
       <li><a href="#7-classical-ui-dev-themes">7. Classical UI (Dev Themes)</a></li>
-      <li><a href="#8-mythology--concepts">8. Mythology &amp; Concepts</a></li>
+      <li><a href="#8-mythology--concepts">8. Mythology & Concepts</a></li>
     </ul>
   </li>
   <li><a href="#troubleshooting">🩺 Troubleshooting</a></li>
 </ul>
 
-
 <a id="how-a-block-is-built"></a>
+
 <p align="center">
   <img src="assets/how_it_is_built.svg" alt="How a block is built" width="900">
 </p>
 
 <p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
 
-
-
 <a id="how-to-use"></a>
+
 <p align="center">
   <img src="assets/use_overview.svg" alt="How to use" width="900">
 </p>
@@ -76,13 +76,7 @@
 </p>
 
 ```bash
-python --version
-pip install git+https://github.com/JonatasCortes/svgblock.git
-
-# or clone the repository and install it from the folder
-git clone https://github.com/JonatasCortes/svgblock.git
-cd svgblock
-pip install .
+pip install svgblock
 ```
 
 <p align="center">
@@ -111,13 +105,15 @@ python generate_blocks.py
 ```
 
 <p align="center">
-  <img src="assets/use_step_4.svg" alt="Step 4: show the block in your profile" width="900">
+  <img src="assets/use_step_4.svg" alt="Step 4: use the SVG" width="900">
 </p>
 
 ```html
-<p align="center">
-  <img src="assets/block.svg" alt="About me" width="900">
-</p>
+<img src="assets/block.svg" alt="About me" width="900">
+```
+
+```markdown
+![About me](assets/block.svg)
 ```
 
 <p align="center">
@@ -131,12 +127,21 @@ Block(theme="dracula", animation="fade").title("About me").text("...").save("ass
 Block(theme="nord", animation="pop").title("Projects").text("...").save("assets/projects.svg")
 ```
 
+<p align="center">
+  <img src="assets/use_local.svg" alt="Optional: use the repository locally" width="900">
+</p>
+
+```bash
+git clone https://github.com/JonatasCortes/svgblock.git
+cd svgblock
+pip install -e .
+```
+
 <p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
-
-
 
 <a id="building-a-block"></a>
 <a id="creating-a-block"></a>
+
 <p align="center">
   <img src="assets/building_create.svg" alt="Creating a block" width="900">
 </p>
@@ -146,6 +151,7 @@ Block(theme="red", width=900, animation="fade")
 ```
 
 <a id="adding-content"></a>
+
 <p align="center">
   <img src="assets/building_content.svg" alt="Adding content" width="900">
 </p>
@@ -155,10 +161,10 @@ Block(theme="red", width=900, animation="fade")
     Block(theme="coffee")
     .title("Projects")
     .text("A few things I built.", font_size=18)
-    .subsection("HNSW Character Recognition")
-    .text("Train and test your own model.")
+    .subsection("Log parser")
+    .text("Reads log files and prints a short summary.")
     .divider()
-    .table(["Project", "Stars"], [["HNSW", 120], ["Voronoi Stats", 85]])
+    .table(["Project", "Stars"], [["logparse", 120], ["tinyserver", 85]])
     .image("assets/preview.png", width=300)
     .divider(0.5)
     .title("Contact")
@@ -167,16 +173,18 @@ Block(theme="red", width=900, animation="fade")
 ```
 
 <a id="text-markers"></a>
+
 <p align="center">
   <img src="assets/markers.svg" alt="Text markers" width="900">
 </p>
 
 ```python
-.text("**ola __mundo__** ola, --errado-- e ##inclinado##")
+.text("**bold**, __underlined__, --struck-- and ##italic##")
 .text(r"A literal \*\* needs a backslash before each asterisk.")
 ```
 
 <a id="columns"></a>
+
 <p align="center">
   <img src="assets/columns.svg" alt="Columns" width="900">
 </p>
@@ -187,13 +195,14 @@ from svgblock import Block, Column
 (
     Block(theme="nord")
     .columns(
-        Column(1).subsection("Weight 1").text("A narrow column, good for short notes."),
-        Column(2).subsection("Weight 2").text("A column twice as wide, ideal for the main text."),
+        Column(1).subsection("Weight 1").text("A narrow column."),
+        Column(2).subsection("Weight 2").text("A column twice as wide."),
     )
 )
 ```
 
 <a id="tables"></a>
+
 <p align="center">
   <img src="assets/tables.svg" alt="Tables" width="900">
 </p>
@@ -210,31 +219,34 @@ from svgblock import Block, Column
     weights=(2, 2, 1),
     striped=True,
     row_dividers=True,
-    column_dividers=False,
+    column_dividers=True,
 )
 ```
 
 <a id="images"></a>
+
 <p align="center">
   <img src="assets/images.svg" alt="Images" width="900">
 </p>
 
 ```python
 (
-    Block(theme="mocha")
+    Block(theme="neon")
     .columns(
-        Column(1).image("assets/logo.png", width=110),
-        Column(4).subsection("A logo beside the text").text("The text takes the rest of the width."),
+        Column().image("assets/logo.png", width=350),
+        Column().subsection("A logo beside the text").text("The image sits in a column and the text takes the rest of the width"),
     )
 )
 ```
 
 <a id="saving-the-result"></a>
+
 <p align="center">
   <img src="assets/saving.svg" alt="Saving the result" width="900">
 </p>
 
 <a id="animations"></a>
+
 <p align="center">
   <img src="assets/animations.svg" alt="Animations" width="900">
 </p>
@@ -251,9 +263,6 @@ from svgblock import Block, Column
 ```python
 from svgblock import Animation, Block
 
-# No animation (the default)
-Block()
-
 # Plays once
 Block(animation="pop")
 Block(animation=Animation.SLIDE_UP)
@@ -264,14 +273,14 @@ Block(animation="slide-up", animation_loop=5)
 
 <p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
 
-
-
 <a id="customization"></a>
+
 <p align="center">
   <img src="assets/customization.svg" alt="Customization" width="900">
 </p>
 
 <a id="creating-your-own-theme"></a>
+
 <p align="center">
   <img src="assets/custom_theme.svg" alt="Creating your own theme" width="900">
 </p>
@@ -292,29 +301,25 @@ Block(animation="slide-up", animation_loop=5)
 ```
 
 <a id="constants-reference"></a>
+
 <p align="center">
   <img src="assets/constants.svg" alt="Constants reference" width="900">
 </p>
 
-```bash
-git clone https://github.com/JonatasCortes/svgblock.git
-cd svgblock
-pip install -e .
-```
-
 <p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
 
-
-
 <a id="themes"></a>
+
 <p align="center">
   <img src="assets/themes_overview.svg" alt="Themes" width="900">
 </p>
 
 <a id="1-dark-colors"></a>
+
 <p align="center">
   <img src="assets/category_dark.svg" alt="Dark colors" width="900">
 </p>
+
 <p align="center">
   <img src="assets/block_red.svg" alt="red theme" width="49%">
   <img src="assets/block_orange.svg" alt="orange theme" width="49%">
@@ -327,9 +332,11 @@ pip install -e .
 </p>
 
 <a id="2-light-colors-pastels"></a>
+
 <p align="center">
   <img src="assets/category_light.svg" alt="Light colors" width="900">
 </p>
+
 <p align="center">
   <img src="assets/block_mint.svg" alt="mint theme" width="49%">
   <img src="assets/block_chocomint.svg" alt="chocomint theme" width="49%">
@@ -339,9 +346,11 @@ pip install -e .
 </p>
 
 <a id="3-seasons"></a>
+
 <p align="center">
   <img src="assets/category_seasons.svg" alt="Seasons" width="900">
 </p>
+
 <p align="center">
   <img src="assets/block_spring.svg" alt="spring theme" width="49%">
   <img src="assets/block_summer.svg" alt="summer theme" width="49%">
@@ -350,9 +359,11 @@ pip install -e .
 </p>
 
 <a id="4-drinks"></a>
+
 <p align="center">
   <img src="assets/category_drinks.svg" alt="Drinks" width="900">
 </p>
+
 <p align="center">
   <img src="assets/block_wine.svg" alt="wine theme" width="49%">
   <img src="assets/block_beer.svg" alt="beer theme" width="49%">
@@ -363,9 +374,11 @@ pip install -e .
 </p>
 
 <a id="5-countries--geography"></a>
+
 <p align="center">
   <img src="assets/category_countries.svg" alt="Countries and geography" width="900">
 </p>
+
 <p align="center">
   <img src="assets/block_brazil.svg" alt="brazil theme" width="49%">
   <img src="assets/block_usa.svg" alt="usa theme" width="49%">
@@ -383,9 +396,11 @@ pip install -e .
 </p>
 
 <a id="6-aesthetics--culture"></a>
+
 <p align="center">
   <img src="assets/category_aesthetics.svg" alt="Aesthetics and culture" width="900">
 </p>
+
 <p align="center">
   <img src="assets/block_neon.svg" alt="neon theme" width="49%">
   <img src="assets/block_cyberpunk.svg" alt="cyberpunk theme" width="49%">
@@ -395,9 +410,11 @@ pip install -e .
 </p>
 
 <a id="7-classical-ui-dev-themes"></a>
+
 <p align="center">
   <img src="assets/category_dev.svg" alt="Classical UI dev themes" width="900">
 </p>
+
 <p align="center">
   <img src="assets/block_dracula.svg" alt="dracula theme" width="49%">
   <img src="assets/block_mocha.svg" alt="mocha theme" width="49%">
@@ -408,9 +425,11 @@ pip install -e .
 </p>
 
 <a id="8-mythology--concepts"></a>
+
 <p align="center">
   <img src="assets/category_mythology.svg" alt="Mythology and concepts" width="900">
 </p>
+
 <p align="center">
   <img src="assets/block_heaven.svg" alt="heaven theme" width="49%">
   <img src="assets/block_hell.svg" alt="hell theme" width="49%">
@@ -419,17 +438,14 @@ pip install -e .
 
 <p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
 
-
-
 <a id="troubleshooting"></a>
+
 <p align="center">
   <img src="assets/troubleshooting.svg" alt="Troubleshooting" width="900">
 </p>
 
 <p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
 
-
-
 <p align="center">
-  <img src="assets/footer.svg" alt="Made with love for GitHub profiles" width="900">
+  <img src="assets/footer.svg" alt="Made with love" width="900">
 </p>
