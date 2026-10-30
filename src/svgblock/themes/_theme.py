@@ -1,0 +1,633 @@
+from enum import Enum
+from ._data import ThemeData
+
+
+class Theme(Enum):
+
+    # ==========================================
+    # 1. DARK COLORS
+    # ==========================================
+    RED = ThemeData(
+        background_center="#1A0A0A", background_edge="#0D0505",
+        border_start="#E60012", border_end="#660008",
+        title_text="#FF3344", title_bar="#E60012",
+        subsection_text="#FF8A98", subsection_marker="#FF3344",
+        text="#FFB3B3", highlight="#FF6677",
+        table_background="#140808", table_header_background="#2A0D10",
+        table_header_text="#FF3344", table_text="#FFB3B3",
+        table_divider="#4D1A1F", table_stripe_background="#1F0B0D",
+        table_border="#660008", divider="#B3202E",
+        underline="#FF8A98", strikethrough="#B36B73", italic="#FFD1D1",
+    )
+    ORANGE = ThemeData(
+        background_center="#24140B", background_edge="#140C07",
+        border_start="#FB923C", border_end="#C2410C",
+        title_text="#FB923C", title_bar="#EA580C",
+        subsection_text="#FDBA74", subsection_marker="#FB923C",
+        text="#FFE0C2", highlight="#FF8C42",
+        table_background="#1B0F08", table_header_background="#33190B",
+        table_header_text="#FB923C", table_text="#FFE0C2",
+        table_divider="#5C3015", table_stripe_background="#22130A",
+        table_border="#7A3A12", divider="#C2410C",
+        underline="#FDBA74", strikethrough="#B38566", italic="#FFEDD5",
+    )
+    YELLOW = ThemeData(
+        background_center="#211B0D", background_edge="#121008",
+        border_start="#FDE047", border_end="#A16207",
+        title_text="#FDE047", title_bar="#FACC15",
+        subsection_text="#FDE68A", subsection_marker="#FACC15",
+        text="#F7ECC0", highlight="#FFE44D",
+        table_background="#181409", table_header_background="#332A0D",
+        table_header_text="#FACC15", table_text="#F7ECC0",
+        table_divider="#54441A", table_stripe_background="#1D170A",
+        table_border="#7A5A10", divider="#CA9A0A",
+        underline="#FDE68A", strikethrough="#A89B6C", italic="#FEF3C7",
+    )
+    GREEN = ThemeData(
+        background_center="#081F10", background_edge="#051209",
+        border_start="#059669", border_end="#064E3B",
+        title_text="#10B981", title_bar="#10B981",
+        subsection_text="#6EE7B7", subsection_marker="#10B981",
+        text="#A7F3D0", highlight="#34D399",
+        table_background="#07180D", table_header_background="#0C2E1B",
+        table_header_text="#10B981", table_text="#A7F3D0",
+        table_divider="#14523A", table_stripe_background="#0A2314",
+        table_border="#0E704E", divider="#059669",
+        underline="#6EE7B7", strikethrough="#5E9C86", italic="#D1FAE5",
+    )
+    BLUE = ThemeData(
+        background_center="#0F1B30", background_edge="#080F1F",
+        border_start="#60A5FA", border_end="#1D4ED8",
+        title_text="#7DD3FC", title_bar="#3B82F6",
+        subsection_text="#93C5FD", subsection_marker="#60A5FA",
+        text="#BAE6FD", highlight="#38BDF8",
+        table_background="#0B1426", table_header_background="#14274A",
+        table_header_text="#7DD3FC", table_text="#BAE6FD",
+        table_divider="#234676", table_stripe_background="#0D1A30",
+        table_border="#1E4DB7", divider="#2563EB",
+        underline="#7DD3FC", strikethrough="#6F8DAF", italic="#E0F2FE",
+    )
+    PURPLE = ThemeData(
+        background_center="#19112B", background_edge="#0D0918",
+        border_start="#A78BFA", border_end="#5B21B6",
+        title_text="#C4B5FD", title_bar="#8B5CF6",
+        subsection_text="#B7A5F5", subsection_marker="#A78BFA",
+        text="#DDD6FE", highlight="#C084FC",
+        table_background="#130D22", table_header_background="#2A1A52",
+        table_header_text="#C4B5FD", table_text="#DDD6FE",
+        table_divider="#44307A", table_stripe_background="#1A1130",
+        table_border="#5B21B6", divider="#7C3AED",
+        underline="#E9D5FF", strikethrough="#8F82B5", italic="#EDE9FE",
+    )
+    PINK = ThemeData(
+        background_center="#1D101D", background_edge="#0D080F",
+        border_start="#F472B6", border_end="#9D174D",
+        title_text="#F9A8D4", title_bar="#EC4899",
+        subsection_text="#F5B3D6", subsection_marker="#F472B6",
+        text="#FBCFE8", highlight="#FF4FA3",
+        table_background="#150C16", table_header_background="#351732",
+        table_header_text="#F472B6", table_text="#FBCFE8",
+        table_divider="#5E2A52", table_stripe_background="#1B0F1C",
+        table_border="#8A1E55", divider="#BE185D",
+        underline="#F9A8D4", strikethrough="#A87C98", italic="#FDE4F2",
+    )
+    OBSIDIAN = ThemeData(
+        background_center="#0F0F0F", background_edge="#050505",
+        border_start="#525252", border_end="#171717",
+        title_text="#FAFAFA", title_bar="#FAFAFA",
+        subsection_text="#D4D4D4", subsection_marker="#A3A3A3",
+        text="#A3A3A3", highlight="#FFFFFF",
+        table_background="#0A0A0A", table_header_background="#1C1C1C",
+        table_header_text="#FAFAFA", table_text="#A3A3A3",
+        table_divider="#2E2E2E", table_stripe_background="#101010",
+        table_border="#404040", divider="#525252",
+        underline="#E5E5E5", strikethrough="#666666", italic="#D4D4D4",
+    )
+
+    # ==========================================
+    # 2. LIGHT COLORS (PASTELS)
+    # ==========================================
+    MINT = ThemeData(
+        background_center="#F0FDF4", background_edge="#DCFCE7",
+        border_start="#059669", border_end="#A7F3D0",
+        title_text="#047857", title_bar="#10B981",
+        subsection_text="#065F46", subsection_marker="#10B981",
+        text="#064E3B", highlight="#0F766E",
+        table_background="#F8FEFA", table_header_background="#CFF5DD",
+        table_header_text="#047857", table_text="#064E3B",
+        table_divider="#A7E3C4", table_stripe_background="#E9FBF0",
+        table_border="#7CCFA6", divider="#34D399",
+        underline="#0E8A5F", strikethrough="#6B9C88", italic="#1F6F54",
+    )
+    CHOCOMINT = ThemeData(
+        background_center="#EAF8EF", background_edge="#D6F5E0",
+        border_start="#6B4226", border_end="#34D399",
+        title_text="#6B4226", title_bar="#10B981",
+        subsection_text="#7A4B2E", subsection_marker="#10B981",
+        text="#5A3A24", highlight="#0B7F58",
+        table_background="#F4FCF7", table_header_background="#C8EBD6",
+        table_header_text="#6B4226", table_text="#5A3A24",
+        table_divider="#A9DBBE", table_stripe_background="#E0F5E8",
+        table_border="#8FCFAE", divider="#34D399",
+        underline="#8C5A3C", strikethrough="#A38C7C", italic="#7A5A44",
+    )
+    LAVENDER = ThemeData(
+        background_center="#F3F0FA", background_edge="#E7E1F6",
+        border_start="#8B5CF6", border_end="#DDD6F3",
+        title_text="#6D28D9", title_bar="#8B5CF6",
+        subsection_text="#6D4FD0", subsection_marker="#9B7BE0",
+        text="#5B47A8", highlight="#9333EA",
+        table_background="#FAF8FE", table_header_background="#DDD3F5",
+        table_header_text="#6D28D9", table_text="#5B47A8",
+        table_divider="#C9BCEC", table_stripe_background="#EEE9F9",
+        table_border="#B8A6EA", divider="#A78BFA",
+        underline="#7C3AED", strikethrough="#A99BCF", italic="#7050C0",
+    )
+    PEACH = ThemeData(
+        background_center="#FFF4EC", background_edge="#FFE6D5",
+        border_start="#F28B5B", border_end="#FFD3B8",
+        title_text="#C2410C", title_bar="#F28B5B",
+        subsection_text="#C4511E", subsection_marker="#F28B5B",
+        text="#7C2D12", highlight="#D94A12",
+        table_background="#FFF9F4", table_header_background="#FFD9C0",
+        table_header_text="#C2410C", table_text="#7C2D12",
+        table_divider="#F5C3A6", table_stripe_background="#FFEEE2",
+        table_border="#F2B08C", divider="#F28B5B",
+        underline="#9A3412", strikethrough="#B89483", italic="#A0451F",
+    )
+    SKY = ThemeData(
+        background_center="#F0F9FF", background_edge="#E0F2FE",
+        border_start="#0284C7", border_end="#BAE6FD",
+        title_text="#0369A1", title_bar="#0EA5E9",
+        subsection_text="#0B6FA8", subsection_marker="#0EA5E9",
+        text="#0C4A6E", highlight="#0284C7",
+        table_background="#F7FCFF", table_header_background="#CDEBFB",
+        table_header_text="#0369A1", table_text="#0C4A6E",
+        table_divider="#A8D8F2", table_stripe_background="#E8F5FD",
+        table_border="#7CC3EA", divider="#38BDF8",
+        underline="#075985", strikethrough="#7BA3BC", italic="#1E6A94",
+    )
+
+    # ==========================================
+    # 3. NATURE & SEASONS
+    # ==========================================
+    SPRING = ThemeData(
+        background_center="#F7FBEF", background_edge="#E8F5D6",
+        border_start="#8BC34A", border_end="#F8BBD0",
+        title_text="#3F7A17", title_bar="#7CB342",
+        subsection_text="#4C8A1F", subsection_marker="#F06292",
+        text="#33691E", highlight="#C2185B",
+        table_background="#FBFEF6", table_header_background="#DDEFC4",
+        table_header_text="#3F7A17", table_text="#33691E",
+        table_divider="#C5DFA3", table_stripe_background="#F0F8E3",
+        table_border="#A5D66B", divider="#8BC34A",
+        underline="#3F8A12", strikethrough="#9AAE86", italic="#5A8A2E",
+    )
+    SUMMER = ThemeData(
+        background_center="#FFF8E1", background_edge="#FFEFC2",
+        border_start="#FF6B35", border_end="#00B4D8",
+        title_text="#C2410C", title_bar="#FF9F1C",
+        subsection_text="#B45309", subsection_marker="#00B4D8",
+        text="#9A3412", highlight="#D9480F",
+        table_background="#FFFCF0", table_header_background="#FFE3A0",
+        table_header_text="#C2410C", table_text="#9A3412",
+        table_divider="#F5D48A", table_stripe_background="#FFF3D1",
+        table_border="#F2A65A", divider="#00B4D8",
+        underline="#0077B6", strikethrough="#B39A7A", italic="#0B7BA6",
+    )
+    AUTUMN = ThemeData(
+        background_center="#292D22", background_edge="#191A16",
+        border_start="#D5A15E", border_end="#8D4937",
+        title_text="#E0B66F", title_bar="#C18C52",
+        subsection_text="#A3AD7E", subsection_marker="#B96345",
+        text="#E2D5B9", highlight="#EDB75A",
+        table_background="#1F2019", table_header_background="#3A3B2A",
+        table_header_text="#E0B66F", table_text="#E2D5B9",
+        table_divider="#4B5940", table_stripe_background="#232519",
+        table_border="#6B5436", divider="#8D4937",
+        underline="#D08A5C", strikethrough="#8D8670", italic="#B9C390",
+    )
+    WINTER = ThemeData(
+        background_center="#172033", background_edge="#0D1321",
+        border_start="#7DD3FC", border_end="#1E293B",
+        title_text="#7DD3FC", title_bar="#7DD3FC",
+        subsection_text="#93C5FD", subsection_marker="#38A3E0",
+        text="#CBD5E1", highlight="#5CD6FF",
+        table_background="#111A2C", table_header_background="#1E2E4A",
+        table_header_text="#7DD3FC", table_text="#CBD5E1",
+        table_divider="#2F4363", table_stripe_background="#141E33",
+        table_border="#2B4A6B", divider="#366480",
+        underline="#E0F2FE", strikethrough="#6B7A90", italic="#E2E8F0",
+    )
+
+    # ==========================================
+    # 4. DRINKS
+    # ==========================================
+    WINE = ThemeData(
+        background_center="#2A0D17", background_edge="#16060C",
+        border_start="#D4A94B", border_end="#6E0F2F",
+        title_text="#E0B65C", title_bar="#D4A94B",
+        subsection_text="#E26A8D", subsection_marker="#B3194A",
+        text="#F3E4C8", highlight="#FFD27A",
+        table_background="#1E0A11", table_header_background="#3E1325",
+        table_header_text="#E0B65C", table_text="#F3E4C8",
+        table_divider="#5E1B34", table_stripe_background="#240B14",
+        table_border="#8A1A40", divider="#B0123F",
+        underline="#E0B56F", strikethrough="#A08A7A", italic="#F0CFC0",
+    )
+    BEER = ThemeData(
+        background_center="#291E12", background_edge="#17110A",
+        border_start="#D97706", border_end="#78350F",
+        title_text="#F59E0B", title_bar="#F59E0B",
+        subsection_text="#FBBF24", subsection_marker="#D97706",
+        text="#FBEBC0", highlight="#FFD166",
+        table_background="#1E160D", table_header_background="#3A280F",
+        table_header_text="#F59E0B", table_text="#FBEBC0",
+        table_divider="#5E4116", table_stripe_background="#231A0F",
+        table_border="#8A4A12", divider="#D97706",
+        underline="#FDE68A", strikethrough="#A8946A", italic="#FFF3C4",
+    )
+    COFFEE = ThemeData(
+        background_center="#2C201C", background_edge="#1C1411",
+        border_start="#8C6046", border_end="#4A3326",
+        title_text="#C99A74", title_bar="#A67B5B",
+        subsection_text="#B98F6C", subsection_marker="#A0663A",
+        text="#EADDD7", highlight="#F0B27A",
+        table_background="#231915", table_header_background="#3C2B24",
+        table_header_text="#C99A74", table_text="#EADDD7",
+        table_divider="#5A4034", table_stripe_background="#281D19",
+        table_border="#5E402B", divider="#8C6046",
+        underline="#D9B38C", strikethrough="#8F7B6E", italic="#F5E6D8",
+    )
+    MATCHA = ThemeData(
+        background_center="#F4F6F0", background_edge="#E5E9DD",
+        border_start="#5B704C", border_end="#D2DAC7",
+        title_text="#4E6A3C", title_bar="#748C61",
+        subsection_text="#4F7036", subsection_marker="#748C61",
+        text="#3D4C35", highlight="#3F7D20",
+        table_background="#FAFBF7", table_header_background="#D8E0CC",
+        table_header_text="#4E6A3C", table_text="#3D4C35",
+        table_divider="#C3CFB3", table_stripe_background="#EEF1E8",
+        table_border="#A9B99A", divider="#8BA372",
+        underline="#5F8B3C", strikethrough="#98A68B", italic="#566B4A",
+    )
+    BERRYMATCHA = ThemeData(
+        background_center="#F4F6F0", background_edge="#E5E9DD",
+        border_start="#5B704C", border_end="#E63946",
+        title_text="#D62839", title_bar="#E63946",
+        subsection_text="#4B7A2A", subsection_marker="#5F8B3C",
+        text="#3D4C35", highlight="#D62839",
+        table_background="#FAFBF7", table_header_background="#F6D5D8",
+        table_header_text="#D62839", table_text="#3D4C35",
+        table_divider="#D5C8C4", table_stripe_background="#EFF2EA",
+        table_border="#D9A1A6", divider="#E63946",
+        underline="#4F8A28", strikethrough="#9DA790", italic="#5A7048",
+    )
+    LATTE = ThemeData(
+        background_center="#FDFBF7", background_edge="#F4EBDD",
+        border_start="#D4A373", border_end="#A9743B",
+        title_text="#96591F", title_bar="#C19A6B",
+        subsection_text="#A8692B", subsection_marker="#C19A6B",
+        text="#7A4F26", highlight="#B8651A",
+        table_background="#FFFDFA", table_header_background="#EBD9BF",
+        table_header_text="#96591F", table_text="#7A4F26",
+        table_divider="#E2CDB0", table_stripe_background="#F8F0E4",
+        table_border="#D4A373", divider="#D4A373",
+        underline="#8F5420", strikethrough="#B8A592", italic="#8A5F36",
+    )
+
+    # ==========================================
+    # 5. COUNTRIES AND CULTURE
+    # ==========================================
+    BRAZIL = ThemeData(
+        background_center="#0B2B1E", background_edge="#071A12",
+        border_start="#FACC15", border_end="#166534",
+        title_text="#22C55E", title_bar="#22C55E",
+        subsection_text="#FACC15", subsection_marker="#FACC15",
+        text="#F0FDF4", highlight="#FFE14D",
+        table_background="#081F16", table_header_background="#0F4A2C",
+        table_header_text="#FACC15", table_text="#F0FDF4",
+        table_divider="#166534", table_stripe_background="#0A2619",
+        table_border="#1B7A3C", divider="#FACC15",
+        underline="#5AA9F0", strikethrough="#7A9C88", italic="#BBF7D0",
+    )
+    USA = ThemeData(
+        background_center="#152238", background_edge="#0A1128",
+        border_start="#E61C38", border_end="#2563EB",
+        title_text="#FF334B", title_bar="#E61C38",
+        subsection_text="#60A5FA", subsection_marker="#FF334B",
+        text="#F5F8FF", highlight="#FF5A6E",
+        table_background="#0E1830", table_header_background="#1B2D5C",
+        table_header_text="#FF334B", table_text="#F5F8FF",
+        table_divider="#2B4A85", table_stripe_background="#111E3A",
+        table_border="#2B4A85", divider="#E61C38",
+        underline="#7DB3FF", strikethrough="#7A87A3", italic="#C7D2E3",
+    )
+    MIAMI = ThemeData(
+        background_center="#002A4D", background_edge="#00152B",
+        border_start="#00B4D8", border_end="#FF2E7E",
+        title_text="#FF3D8B", title_bar="#FF2E7E",
+        subsection_text="#00F5C4", subsection_marker="#00F5C4",
+        text="#FFDD33", highlight="#FF5C9D",
+        table_background="#001D3A", table_header_background="#003B66",
+        table_header_text="#FF3D8B", table_text="#FFDD33",
+        table_divider="#0A5C8A", table_stripe_background="#002340",
+        table_border="#0A6F9C", divider="#FF2E7E",
+        underline="#4DD8F0", strikethrough="#7D8FA6", italic="#7FFFE0",
+    )
+    FRANCE = ThemeData(
+        background_center="#151C2E", background_edge="#0A0E1A",
+        border_start="#ED2939", border_end="#0055A5",
+        title_text="#5B9BFF", title_bar="#ED2939",
+        subsection_text="#FF6670", subsection_marker="#ED2939",
+        text="#F5F7FC", highlight="#6FA8FF",
+        table_background="#0D1322", table_header_background="#1B2A4D",
+        table_header_text="#5B9BFF", table_text="#F5F7FC",
+        table_divider="#2F4570", table_stripe_background="#101728",
+        table_border="#2F4570", divider="#ED2939",
+        underline="#E0E8F8", strikethrough="#7A869E", italic="#AFC3E6",
+    )
+    JAPANDARK = ThemeData(
+        background_center="#0A0A0A", background_edge="#000000",
+        border_start="#BC002D", border_end="#333333",
+        title_text="#FF2A55", title_bar="#E60033",
+        subsection_text="#FF6B87", subsection_marker="#E60033",
+        text="#F5F5F5", highlight="#FF5C7A",
+        table_background="#050505", table_header_background="#230209",
+        table_header_text="#FF2A55", table_text="#F5F5F5",
+        table_divider="#3A0A14", table_stripe_background="#0D0D0D",
+        table_border="#4A0D1A", divider="#BC002D",
+        underline="#FF9FB0", strikethrough="#6B6B6B", italic="#D6D6D6",
+    )
+    JAPANLIGHT = ThemeData(
+        background_center="#F8F9FA", background_edge="#E5E7EB",
+        border_start="#E60033", border_end="#990022",
+        title_text="#BC002D", title_bar="#BC002D",
+        subsection_text="#4B5563", subsection_marker="#E60033",
+        text="#111827", highlight="#C8102E",
+        table_background="#FFFFFF", table_header_background="#F8DDE2",
+        table_header_text="#BC002D", table_text="#111827",
+        table_divider="#D1D5DB", table_stripe_background="#F1F3F5",
+        table_border="#C9CDD3", divider="#BC002D",
+        underline="#990022", strikethrough="#9CA3AF", italic="#374151",
+    )
+    SAKURA = ThemeData(
+        background_center="#1A1D2C", background_edge="#0F111A",
+        border_start="#FF6B8B", border_end="#7C3AED",
+        title_text="#FF9EAA", title_bar="#FF6B8B",
+        subsection_text="#B9A2FF", subsection_marker="#FF9EAA",
+        text="#F7F2EF", highlight="#FF86A8",
+        table_background="#131624", table_header_background="#2A2040",
+        table_header_text="#FF9EAA", table_text="#F7F2EF",
+        table_divider="#3A3552", table_stripe_background="#161927",
+        table_border="#3F3A5E", divider="#7C3AED",
+        underline="#FFD1DC", strikethrough="#6F7791", italic="#D9CFFF",
+    )
+    INDIA = ThemeData(
+        background_center="#182232", background_edge="#0D111A",
+        border_start="#FF7A00", border_end="#059669",
+        title_text="#FF9A1F", title_bar="#FF7A00",
+        subsection_text="#2FD6A0", subsection_marker="#10B981",
+        text="#F5F7FA", highlight="#FFA733",
+        table_background="#101622", table_header_background="#3A2410",
+        table_header_text="#FF9A1F", table_text="#F5F7FA",
+        table_divider="#3A4A66", table_stripe_background="#121A28",
+        table_border="#3A4A66", divider="#FF7A00",
+        underline="#5BE0B0", strikethrough="#7A879B", italic="#A9C4FF",
+    )
+    CHINA = ThemeData(
+        background_center="#240C12", background_edge="#120608",
+        border_start="#DE2910", border_end="#8B0000",
+        title_text="#FFD700", title_bar="#DE2910",
+        subsection_text="#FFE066", subsection_marker="#FFD700",
+        text="#FFF5E6", highlight="#FF4D3D",
+        table_background="#190A0D", table_header_background="#3D0E14",
+        table_header_text="#FFD700", table_text="#FFF5E6",
+        table_divider="#6E1F2E", table_stripe_background="#1E0B0F",
+        table_border="#8B1A1A", divider="#DE2910",
+        underline="#FFD700", strikethrough="#8F766C", italic="#FFE9B8",
+    )
+    MEXICO = ThemeData(
+        background_center="#11231A", background_edge="#0A140E",
+        border_start="#00A859", border_end="#E4002B",
+        title_text="#00D67E", title_bar="#00D67E",
+        subsection_text="#7DF0B3", subsection_marker="#FF2D3F",
+        text="#F5FFF9", highlight="#FF4D5E",
+        table_background="#0C1A12", table_header_background="#124A2C",
+        table_header_text="#00D67E", table_text="#F5FFF9",
+        table_divider="#1A6B45", table_stripe_background="#0E1E15",
+        table_border="#12894F", divider="#E4002B",
+        underline="#7DF0B3", strikethrough="#6E9482", italic="#D6F5E4",
+    )
+    FIESTA = ThemeData(
+        background_center="#2A1020", background_edge="#170A14",
+        border_start="#FF1493", border_end="#FFB800",
+        title_text="#FF3FA4", title_bar="#FF1493",
+        subsection_text="#FFB800", subsection_marker="#00E5A8",
+        text="#FFEE55", highlight="#00E5A8",
+        table_background="#1F0D1A", table_header_background="#4A1238",
+        table_header_text="#FF3FA4", table_text="#FFEE55",
+        table_divider="#7A1E5E", table_stripe_background="#250F1F",
+        table_border="#C2187A", divider="#FFB800",
+        underline="#FF7DD1", strikethrough="#9A7088", italic="#FFF176",
+    )
+    GREECE = ThemeData(
+        background_center="#FAFAFA", background_edge="#EDF3FA",
+        border_start="#0D5EAF", border_end="#9CC3E8",
+        title_text="#0D5EAF", title_bar="#0D5EAF",
+        subsection_text="#0077A8", subsection_marker="#0096C7",
+        text="#1B4F8A", highlight="#0066CC",
+        table_background="#FFFFFF", table_header_background="#D5E5F6",
+        table_header_text="#0D5EAF", table_text="#1B4F8A",
+        table_divider="#C3D6EA", table_stripe_background="#F2F7FC",
+        table_border="#9CC3E8", divider="#0D5EAF",
+        underline="#0A7BB8", strikethrough="#94A9C0", italic="#2A6BB0",
+    )
+    EGYPT = ThemeData(
+        background_center="#F7EED2", background_edge="#EADCA6",
+        border_start="#C2A42D", border_end="#1B4A87",
+        title_text="#1B4A87", title_bar="#C2A42D",
+        subsection_text="#8A6A0A", subsection_marker="#C2A42D",
+        text="#2B2311", highlight="#1A7F86",
+        table_background="#FBF5E0", table_header_background="#EBDDA0",
+        table_header_text="#1B4A87", table_text="#2B2311",
+        table_divider="#D9C885", table_stripe_background="#F3E9C4",
+        table_border="#C2A42D", divider="#C2A42D",
+        underline="#8A6200", strikethrough="#A39B7E", italic="#2556A8",
+    )
+
+    # ==========================================
+    # 6. AESTHETICS & CULTURE
+    # ==========================================
+    NEON = ThemeData(
+        background_center="#121324", background_edge="#080811",
+        border_start="#FF0055", border_end="#7000FF",
+        title_text="#FF1F6E", title_bar="#FF0055",
+        subsection_text="#B26BFF", subsection_marker="#00F0FF",
+        text="#F2F2FF", highlight="#00F0FF",
+        table_background="#0C0D1B", table_header_background="#1F1040",
+        table_header_text="#FF1F6E", table_text="#F2F2FF",
+        table_divider="#2D2F5C", table_stripe_background="#101125",
+        table_border="#4B2A9A", divider="#7000FF",
+        underline="#FF6BA8", strikethrough="#6A6D8F", italic="#C7B5FF",
+    )
+    CYBERPUNK = ThemeData(
+        background_center="#180538", background_edge="#0D0221",
+        border_start="#FF007F", border_end="#2B00FF",
+        title_text="#FF2E97", title_bar="#FF007F",
+        subsection_text="#FCEE0A", subsection_marker="#FF007F",
+        text="#5EF5FF", highlight="#00FF41",
+        table_background="#12042B", table_header_background="#2B0A5E",
+        table_header_text="#FF2E97", table_text="#5EF5FF",
+        table_divider="#4A1A8A", table_stripe_background="#15053A",
+        table_border="#5A20D0", divider="#2B00FF",
+        underline="#FF2E97", strikethrough="#7A6FA8", italic="#B9A3FF",
+    )
+    STEAMPUNK = ThemeData(
+        background_center="#29211D", background_edge="#1A1512",
+        border_start="#B8631E", border_end="#3E2723",
+        title_text="#D98C3A", title_bar="#C27A2E",
+        subsection_text="#E6C287", subsection_marker="#B87333",
+        text="#D4A373", highlight="#E8B85A",
+        table_background="#211A16", table_header_background="#3D2A1C",
+        table_header_text="#D98C3A", table_text="#D4A373",
+        table_divider="#5E3C1E", table_stripe_background="#261E19",
+        table_border="#6B4423", divider="#B5651D",
+        underline="#5FB3A8", strikethrough="#8A7560", italic="#E6C287",
+    )
+    SYNTHWAVE = ThemeData(
+        background_center="#240046", background_edge="#130026",
+        border_start="#7B2CBF", border_end="#FF006E",
+        title_text="#05FFA1", title_bar="#05FFA1",
+        subsection_text="#00E5FF", subsection_marker="#FF006E",
+        text="#FF71CE", highlight="#FFC13D",
+        table_background="#1A0033", table_header_background="#3C0A6B",
+        table_header_text="#05FFA1", table_text="#FF8AD8",
+        table_divider="#5A1A8F", table_stripe_background="#1E003A",
+        table_border="#7B2CBF", divider="#FF006E",
+        underline="#7DF9FF", strikethrough="#8A5C9E", italic="#FFB3F7",
+    )
+    LOFI = ThemeData(
+        background_center="#323247", background_edge="#27273A",
+        border_start="#8B5CF6", border_end="#4C1D95",
+        title_text="#B9A3FF", title_bar="#8B5CF6",
+        subsection_text="#C4B5FD", subsection_marker="#5EEAD4",
+        text="#E2D9F3", highlight="#5EEAD4",
+        table_background="#2C2C40", table_header_background="#44406A",
+        table_header_text="#B9A3FF", table_text="#E2D9F3",
+        table_divider="#5C5086", table_stripe_background="#303046",
+        table_border="#5C5086", divider="#8B5CF6",
+        underline="#F9A8D4", strikethrough="#7C7A9E", italic="#A7F3EA",
+    )
+
+    # ==========================================
+    # 7. CLASSICAL UI
+    # ==========================================
+    DRACULA = ThemeData(
+        background_center="#343746", background_edge="#282A36",
+        border_start="#50FA7B", border_end="#BD93F9",
+        title_text="#FF79C6", title_bar="#FF79C6",
+        subsection_text="#BD93F9", subsection_marker="#BD93F9",
+        text="#F8F8F2", highlight="#F1FA8C",
+        table_background="#21222C", table_header_background="#44475A",
+        table_header_text="#FF79C6", table_text="#F8F8F2",
+        table_divider="#44475A", table_stripe_background="#2D2F3B",
+        table_border="#6272A4", divider="#BD93F9",
+        underline="#8BE9FD", strikethrough="#6272A4", italic="#FFB86C",
+    )
+    MOCHA = ThemeData(
+        background_center="#242438", background_edge="#1E1E2E",
+        border_start="#89DCEB", border_end="#CBA6F7",
+        title_text="#F5C2E7", title_bar="#F5C2E7",
+        subsection_text="#CBA6F7", subsection_marker="#89B4FA",
+        text="#CDD6F4", highlight="#F9E2AF",
+        table_background="#181825", table_header_background="#313244",
+        table_header_text="#F5C2E7", table_text="#CDD6F4",
+        table_divider="#45475A", table_stripe_background="#1C1C2B",
+        table_border="#585B70", divider="#CBA6F7",
+        underline="#89DCEB", strikethrough="#6C7086", italic="#B4BEFE",
+    )
+    NORD = ThemeData(
+        background_center="#3B4252", background_edge="#2E3440",
+        border_start="#81A1C1", border_end="#434C5E",
+        title_text="#88C0D0", title_bar="#88C0D0",
+        subsection_text="#81A1C1", subsection_marker="#81A1C1",
+        text="#E5E9F0", highlight="#EBCB8B",
+        table_background="#272C36", table_header_background="#434C5E",
+        table_header_text="#88C0D0", table_text="#E5E9F0",
+        table_divider="#4C566A", table_stripe_background="#2C323D",
+        table_border="#4C566A", divider="#5E81AC",
+        underline="#A3BE8C", strikethrough="#6B7690", italic="#D8DEE9",
+    )
+    SOLARIZEDDARK = ThemeData(
+        background_center="#073642", background_edge="#002B36",
+        border_start="#CB4B16", border_end="#002B36",
+        title_text="#C99700", title_bar="#B58900",
+        subsection_text="#2AA198", subsection_marker="#CB4B16",
+        text="#93A1A1", highlight="#E5732A",
+        table_background="#00232D", table_header_background="#0B4755",
+        table_header_text="#C99700", table_text="#93A1A1",
+        table_divider="#0F4C5C", table_stripe_background="#04303B",
+        table_border="#1C5A68", divider="#CB4B16",
+        underline="#2AA198", strikethrough="#586E75", italic="#B2C2C2",
+    )
+    SOLARIZEDLIGHT = ThemeData(
+        background_center="#FDF6E3", background_edge="#EEE8D5",
+        border_start="#2AA198", border_end="#CCC5B2",
+        title_text="#1A6FB0", title_bar="#268BD2",
+        subsection_text="#1B857E", subsection_marker="#2AA198",
+        text="#586E75", highlight="#C02A72",
+        table_background="#FEFAEE", table_header_background="#E3DCC3",
+        table_header_text="#1A6FB0", table_text="#586E75",
+        table_divider="#D5CDB5", table_stripe_background="#F5EFDC",
+        table_border="#B8B198", divider="#2AA198",
+        underline="#8F6A00", strikethrough="#A0A99F", italic="#5F64B8",
+    )
+    ATLAS = ThemeData(
+        background_center="#151E35", background_edge="#0B1020",
+        border_start="#8299D4", border_end="#62528F",
+        title_text="#E8C878", title_bar="#E8C878",
+        subsection_text="#A99AE8", subsection_marker="#6F8CCF",
+        text="#D9E4F2", highlight="#FFDA85",
+        table_background="#0F1629", table_header_background="#1E2A4A",
+        table_header_text="#E8C878", table_text="#D9E4F2",
+        table_divider="#2F3F66", table_stripe_background="#121A2F",
+        table_border="#3F5380", divider="#62528F",
+        underline="#A99AE8", strikethrough="#6B7A99", italic="#B5C6E0",
+    )
+    HEAVEN = ThemeData(
+        background_center="#F4F9FF", background_edge="#E6F1FC",
+        border_start="#38BDF8", border_end="#FFC83D",
+        title_text="#0B6FC2", title_bar="#FFB300",
+        subsection_text="#1565C0", subsection_marker="#38BDF8",
+        text="#34519E", highlight="#B87400",
+        table_background="#FAFCFF", table_header_background="#D4E8FA",
+        table_header_text="#0B6FC2", table_text="#34519E",
+        table_divider="#BDD8F0", table_stripe_background="#EDF5FD",
+        table_border="#8EC9F0", divider="#FFC83D",
+        underline="#0B6FC2", strikethrough="#94A7C4", italic="#4A68B0",
+    )
+    HELL = ThemeData(
+        background_center="#170505", background_edge="#0A0303",
+        border_start="#FF3300", border_end="#4D0000",
+        title_text="#FF2D1F", title_bar="#CC0000",
+        subsection_text="#FF6600", subsection_marker="#FF3300",
+        text="#FF7A2E", highlight="#FF9900",
+        table_background="#100404", table_header_background="#330808",
+        table_header_text="#FF3A1A", table_text="#FF7A2E",
+        table_divider="#5C0E0E", table_stripe_background="#150505",
+        table_border="#7A0F0F", divider="#CC0000",
+        underline="#FFC266", strikethrough="#8A4A3A", italic="#FFA066",
+    )
+    ABYSS = ThemeData(
+        background_center="#021226", background_edge="#010A14",
+        border_start="#0077B6", border_end="#01050A",
+        title_text="#1CC8EA", title_bar="#00B4D8",
+        subsection_text="#4FD1E8", subsection_marker="#0096C7",
+        text="#8CF0DC", highlight="#3DFFD6",
+        table_background="#010F1E", table_header_background="#06314A",
+        table_header_text="#00B4D8", table_text="#8CF0DC",
+        table_divider="#0B4A63", table_stripe_background="#021A2E",
+        table_border="#0B5C7E", divider="#0077B6",
+        underline="#7DF0FF", strikethrough="#3F7F8C", italic="#B5FFEE",
+    )

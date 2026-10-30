@@ -3,12 +3,12 @@ from dataclasses import dataclass
 from functools import partial
 from pathlib import Path
 
-from src.svgblock import Animation, Block, Column, THEMES
+from src.svgblock import Animation, Block, Column, Theme, ThemeData
 
 ASSETS_DIR = Path("assets")
 LOGO_PATH = (ASSETS_DIR / "svgblock_logo.png").as_posix()
 
-DOC_THEME = "neon"
+DOC_THEME = Theme.NEON
 DOC_WIDTH = 800
 DOC_ANIMATION = Animation.FADE
 
@@ -73,7 +73,7 @@ class Category:
     slug: str
     title: str
     description: str
-    themes: tuple[str, ...]
+    themes: tuple[str, ...]  # lowercase names of Theme members
 
 
 CATEGORIES: tuple[Category, ...] = (
@@ -147,14 +147,26 @@ def animation_name(animation: Animation) -> str:
 
 
 def validate_categories() -> None:
+    all_themes = {theme.name.lower() for theme in Theme}
     listed = [theme for category in CATEGORIES for theme in category.themes]
-    missing = set(THEMES) - set(listed)
-    unknown = set(listed) - set(THEMES)
+    missing = all_themes - set(listed)
+    unknown = set(listed) - all_themes
     duplicated = {theme for theme in listed if listed.count(theme) > 1}
     if missing or unknown or duplicated:
         raise ValueError(
-            f"CATEGORIES out of sync with THEMES: missing={sorted(missing)}, "
+            f"CATEGORIES out of sync with Theme: missing={sorted(missing)}, "
             f"unknown={sorted(unknown)}, duplicated={sorted(duplicated)}"
+        )
+
+
+def validate_theme_colors() -> None:
+    documented = {name for name, _ in THEME_COLORS}
+    declared = set(ThemeData.__annotations__)
+    if documented != declared:
+        raise ValueError(
+            f"THEME_COLORS out of sync with ThemeData: "
+            f"missing={sorted(declared - documented)}, "
+            f"unknown={sorted(documented - declared)}"
         )
 
 
@@ -181,7 +193,8 @@ def intro() -> Block:
               "**animation**, and svgblock takes care of colors, spacing, line breaks and "
               "the height of the block.")
         .text("It is plain Python with no external dependencies, and **50 ready-made themes** "
-              "are included.")
+              "are included. You can also edit them or create your own without touching the "
+              "library's code.")
         .text("##Every block in this README was made with svgblock itself.##")
     )
 
@@ -308,8 +321,9 @@ def use_local() -> Block:
         doc_block()
         .subsection("Optional: use the repository locally")
         .text("To work with the source code, clone the repository and install it in "
-              "**editable mode**. Changes you make to the code take effect right away, which "
-              "is also how you add your own themes and edit the constants.")
+              "**editable mode**. Changes you make to the code take effect right away. "
+              "You do not need this to edit or create themes: that works with the "
+              "regular pip installation.")
     )
 
 
@@ -329,8 +343,9 @@ def building_create() -> Block:
         .table(
             ["Parameter", "Default", "What it does"],
             [
-                ["theme", '"red"',
-                 "The name of the theme, which defines every color. See Themes."],
+                ["theme", "Theme.RED",
+                 "A member of the Theme enum, or your own ThemeData. It defines every color. "
+                 "See Themes."],
                 ["width", 800, "The width of the block, in pixels. The height is calculated for you."],
                 ["animation", "None",
                     "The entrance animation. Without it the block is static. See Animations."],
@@ -339,7 +354,7 @@ def building_create() -> Block:
                 ["frame", "True", "Draws the border and the background. With False, only the content is drawn."],
             ],
             align=("left", "center", "left"),
-            weights=(2, 1, 5),
+            weights=(2, 2, 5),
         )
         .text("Every parameter is optional: Block() alone gives you a static block.")
     )
@@ -584,14 +599,16 @@ def customization() -> Block:
     return (
         doc_block()
         .title("Customization")
-        .text("Most choices are parameters of **Block** and its methods. For anything deeper, "
-              "the source code has clear places to edit.")
         .subsection("What you can change")
         .table(
             ["What", "How", "Where"],
             [
                 ["Colors and visual style", "Pick a ready-made theme",
-                 "theme= in Block(...)"],
+                 "theme=Theme.NAME in Block(...)"],
+                ["A ready-made theme", "Change some of its colors",
+                 "Theme.NAME.value.update(...). See Editing a Theme"],
+                ["A new theme", "Create a ThemeData with every color",
+                 "theme=your_theme in Block(...). See Creating Your Own Theme"],
                 ["Entrance animation", "Pick one of the six options",
                  "animation= in Block(...)"],
                 ["Animation replay", "Set the seconds between replays",
@@ -601,14 +618,11 @@ def customization() -> Block:
                 ["Size of the text", "Set a number of pixels",
                  "font_size= in .title(), .subsection() and .text()"],
                 ["Look of a table", "Pass options to the table", "See Tables"],
-                ["A new theme", "Add an entry to THEMES", "svgblock/themes.py"],
                 ["Spacing, sizes, durations", "Edit the constants",
                     "See Constants Reference"],
             ],
-            weights=(3, 3, 4),
+            weights=(3, 3, 5),
         )
-        .text("New themes and constants live in the source code, so install the repository in "
-              "editable mode first (see How to Use).")
     )
 
 
@@ -617,16 +631,43 @@ def custom_theme() -> Block:
     return (
         doc_block()
         .title("Creating Your Own Theme")
-        .text("A theme is an entry in the THEMES dictionary, in the file **svgblock/themes.py**. "
-              "The name is lowercase and is exactly what you pass to Block(theme=...). "
-              f"Every entry has these **{len(THEME_COLORS)} colors**, written as "
+        .text("A theme is a **ThemeData**: a dictionary that holds the colors of a block. Create "
+              "one in your own code and pass it to **Block(theme=...)**, exactly like a "
+              "ready-made theme.")
+        .text(f"Every ThemeData has these **{len(THEME_COLORS)} colors**, written as "
               "hexadecimal values (#RRGGBB):")
         .table(["Color", "What it paints"], [list(color) for color in THEME_COLORS], weights=(2, 3))
         .divider()
-        .text("The background is a radial glow, so give the two background colors some "
+        .subsection("Good to know")
+        .text("• Give every color. Python does not check a ThemeData while the program runs, so "
+              "a missing color only shows up as an error when the block is drawn. Editors with "
+              "type checking point it out earlier.")
+        .text("• The background is a radial glow, so give the two background colors some "
               "difference: with the same color in both, the glow is invisible.")
-        .text("Choose text colors with good contrast against the background. Inline styles are "
+        .text("• Choose text colors with good contrast against the background. Inline styles are "
               "drawn over the same background as regular text.")
+    )
+
+
+@pipeline.asset("edit_theme.svg")
+def edit_theme() -> Block:
+    return (
+        doc_block()
+        .title("Editing a Theme")
+        .text("Every ready-made theme is a member of the **Theme** enum, and its colors are in "
+              "**.value**, which is a ThemeData. Change some of them with **.update(...)**, "
+              "passing only the colors you want to replace. The library files stay untouched.")
+        .subsection("The change applies to the whole program")
+        .text("Ready-made themes are shared. After Theme.RED.value.update(...), every block that "
+              "uses Theme.RED gets the new colors, until the program ends. Make the change "
+              "**before** you build the blocks that use it.")
+        .subsection("Keeping the original")
+        .text("To get a variation and still use the original somewhere else, make a copy with "
+              "**.value.copy()**, change the copy and pass it to Block. The ready-made theme is "
+              "not affected.")
+        .divider()
+        .text("A copy is also the quickest way to create a theme: start from one that is close "
+              "to what you want and change only the colors that differ.")
     )
 
 
@@ -641,7 +682,7 @@ def constants() -> Block:
         .table(
             ["File", "Constants", "What it controls"],
             [
-                ["block.py (defaults)", "DEFAULT_THEME_NAME, DEFAULT_WIDTH, DEFAULT_ANIMATION",
+                ["block.py (defaults)", "DEFAULT_THEME, DEFAULT_WIDTH, DEFAULT_ANIMATION",
                  "The values used when you do not pass a parameter."],
                 ["block.py (layout, font)", "BLOCK_PADDING, FONT_FAMILY",
                  "The space between the border and the content, and the font stack written in the SVG."],
@@ -685,7 +726,9 @@ def themes_overview() -> Block:
         .title("Themes")
         .text("A theme defines every color of a block: the border gradient, the glowing "
               "background, titles, subsections, text, inline styles, tables and dividers. ")
-        .text('To use a theme, pass its name to the block: **__theme="theme-name"__**.')
+        .text("The ready-made themes are the members of the **Theme** enum. To use one, pass it "
+              "to the block: **__theme=Theme.NAME__**.")
+        .text("Want to tweak a theme or build your own? See Customization.")
         .divider()
         .table(
             ["Category", "Themes"],
@@ -698,7 +741,7 @@ def themes_overview() -> Block:
 
 
 def category_header(index: int, category: Category) -> Block:
-    keys = ", ".join(f"**{key}**" for key in category.themes)
+    keys = ", ".join(f"**{key.upper()}**" for key in category.themes)
     return (
         doc_block()
         .title(f"{index}. {category.title}")
@@ -707,12 +750,13 @@ def category_header(index: int, category: Category) -> Block:
     )
 
 
-def theme_showcase(key: str) -> Block:
+def theme_showcase(theme: Theme) -> Block:
+    key = theme.name.lower()
     name = DISPLAY_NAMES.get(key, key.title())
     return (
-        Block(key, THEME_WIDTH, Animation.SLIDE_DOWN)
+        Block(theme, THEME_WIDTH, Animation.SLIDE_DOWN)
         .title(f"{name.upper()} THEME")
-        .text(f'Use it with theme="{key}".')
+        .text(f"Use it with theme=Theme.{theme.name}.")
         .subsection("Subsection: text and marker")
         .text("Body text has its own color. Inline styles have theirs: **highlight**, "
               "__underline__, --strikethrough--, ##italic## and **__combined__**.")
@@ -734,8 +778,9 @@ for _index, _category in enumerate(CATEGORIES, start=1):
     pipeline.add(f"category_{_category.slug}.svg",
                  partial(category_header, _index, _category))
 
-for _key in THEMES:
-    pipeline.add(f"block_{_key}.svg", partial(theme_showcase, _key))
+for _theme in Theme:
+    pipeline.add(f"block_{_theme.name.lower()}.svg",
+                 partial(theme_showcase, _theme))
 
 
 # ---------------------------------------------------------------------------
@@ -751,9 +796,20 @@ def troubleshooting() -> Block:
         .table(
             ["Problem", "What to check"],
             [
-                ["ValueError: Unknown theme",
-                 "The theme name does not exist. The error message lists every available theme. "
-                 "Names are lowercase, exactly as shown in the Themes section."],
+                ["AttributeError: Theme has no attribute ...",
+                 "The theme does not exist in the Theme enum. Names are uppercase, exactly as "
+                 "shown in the Themes section (for example Theme.NEON). To use a color scheme "
+                 "that is not there, create your own ThemeData."],
+                ["An error that names a color, such as KeyError: 'divider'",
+                 "Your ThemeData is missing that color. Every theme needs all of them. See the "
+                 "list in Creating Your Own Theme, or start from a copy of a ready-made theme."],
+                ["A theme changed in blocks where I did not expect it",
+                 "Theme.NAME.value.update(...) changes the shared theme for the whole program. "
+                 "To change only one block, use Theme.NAME.value.copy(), edit the copy and pass "
+                 "it to that block."],
+                ["My theme edit has no effect",
+                 "Make the change before the blocks that use it are drawn, and check that the "
+                 "color name is spelled exactly as in the list of theme colors."],
                 ["ValueError: Unknown animation",
                  "The valid names are fade, slide-up, slide-down, slide-left, slide-right and "
                  "pop. For a static block, omit the parameter or pass None."],
@@ -813,4 +869,5 @@ def footer() -> Block:
 
 if __name__ == "__main__":
     validate_categories()
+    validate_theme_colors()
     pipeline.run()

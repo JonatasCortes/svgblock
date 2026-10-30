@@ -8,7 +8,7 @@ from .animations import (
 )
 from .composition import Composer
 from .frame import build_frame
-from .themes import THEMES, Theme
+from .themes import Theme, ThemeData
 
 DEFAULT_THEME_NAME = "red"
 DEFAULT_WIDTH = 800
@@ -23,14 +23,16 @@ class Block(Composer):
 
     def __init__(
         self,
-        theme: str = DEFAULT_THEME_NAME,
+        theme: ThemeData | Theme = Theme.NEON,
         width: float = DEFAULT_WIDTH,
         animation: Animation | str | None = DEFAULT_ANIMATION,
         frame: bool = True,
         animation_loop: float | None = None,
     ) -> None:
         super().__init__()
-        self._theme = _find_theme(theme)
+        if isinstance(theme, Theme):
+            theme = theme.value
+        self._theme = theme
         self._width = width
         self._animation = _parse_animation(animation)
         if animation_loop is not None and self._animation is None:
@@ -73,14 +75,6 @@ class Block(Composer):
         file_path = Path(path)
         file_path.parent.mkdir(parents=True, exist_ok=True)
         file_path.write_text(self.render(), encoding="utf-8")
-
-
-def _find_theme(name: str) -> Theme:
-    try:
-        return THEMES[name.lower().replace(" ", "").replace("-", "").replace("_", "")]
-    except KeyError:
-        raise ValueError(
-            f"Unknown theme {name!r}. Available: {', '.join(THEMES)}") from None
 
 
 def _parse_animation(animation: Animation | str | None) -> Animation | None:
