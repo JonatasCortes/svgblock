@@ -1,4 +1,4 @@
-from .themes import Theme
+from .themes import ThemeData
 
 BACKGROUND_GRADIENT_ID = "background"
 BORDER_GRADIENT_ID = "border"
@@ -8,7 +8,7 @@ CORNER_RADIUS = 15
 BACKGROUND_GLOW_RADIUS = 0.7
 
 
-def build_frame(theme: Theme, width: float, height: float) -> str:
+def build_frame(theme: ThemeData, width: float, height: float) -> str:
     return (
         _build_gradient_definitions(theme)
         + _build_rectangle(width, height,
@@ -18,7 +18,7 @@ def build_frame(theme: Theme, width: float, height: float) -> str:
     )
 
 
-def _build_gradient_definitions(theme: Theme) -> str:
+def _build_gradient_definitions(theme: ThemeData) -> str:
     return (
         "<defs>"
         f'<radialGradient id="{BACKGROUND_GRADIENT_ID}" cx="0.5" cy="0.5" '

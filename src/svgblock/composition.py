@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import TypeVar
 
 from .image_reader import read_image
-from .themes import Theme
+from .themes import ThemeData
 from .components import (
     DIVIDER_COVERAGE, TABLE_BORDER_RADIUS, TABLE_CELL_PADDING, TABLE_FONT_SIZE,
     Alignment, CellValue, Component, Image, Paragraph, RenderedComponent,
@@ -117,7 +117,7 @@ class Composer:
         return self
 
     def _render_components(
-        self, theme: Theme, left: float, top: float, width: float
+        self, theme: ThemeData, left: float, top: float, width: float
     ) -> RenderedComponent:
         parts: list[str] = []
         current_top = top
@@ -142,9 +142,7 @@ class Column(Composer):
     def weight(self) -> float:
         return self._weight
 
-    def render(
-        self, theme: Theme, left: float, top: float, width: float
-    ) -> RenderedComponent:
+    def render(self, theme: ThemeData, left: float, top: float, width: float) -> RenderedComponent:
         return self._render_components(theme, left, top, width)
 
 
@@ -152,9 +150,7 @@ class _Columns(Component):
     def __init__(self, columns: Sequence[Column]) -> None:
         self._columns = tuple(columns)
 
-    def render(
-        self, theme: Theme, left: float, top: float, width: float
-    ) -> RenderedComponent:
+    def render(self, theme: ThemeData, left: float, top: float, width: float) -> RenderedComponent:
         available_width = width - COLUMN_GAP * (len(self._columns) - 1)
         total_weight = sum(column.weight for column in self._columns)
 

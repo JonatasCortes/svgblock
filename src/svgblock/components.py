@@ -5,7 +5,7 @@ from xml.sax.saxutils import escape
 from .image_reader import ImageData
 from .line_parser import wrap_into_lines
 from .markup import Style, TextSegment, parse_markup
-from .themes import Theme
+from .themes import ThemeData
 
 LINE_HEIGHT_RATIO = 1.5
 BASELINE_RATIO = 1.1
@@ -44,7 +44,7 @@ class RenderedComponent:
 
 class Component(Protocol):
     def render(
-        self, theme: Theme, left: float, top: float, width: float
+        self, theme: ThemeData, left: float, top: float, width: float
     ) -> RenderedComponent: ...
 
 
@@ -53,7 +53,7 @@ class Title:
     text: str
     font_size: float
 
-    def render(self, theme: Theme, left: float, top: float, width: float) -> RenderedComponent:
+    def render(self, theme: ThemeData, left: float, top: float, width: float) -> RenderedComponent:
         line_height = _line_height(self.font_size)
         text_offset = TITLE_BAR_WIDTH + TITLE_BAR_GAP
         lines = _wrap_bold_text(self.text, self.font_size, width - text_offset)
@@ -80,7 +80,7 @@ class Subsection:
     text: str
     font_size: float
 
-    def render(self, theme: Theme, left: float, top: float, width: float) -> RenderedComponent:
+    def render(self, theme: ThemeData, left: float, top: float, width: float) -> RenderedComponent:
         line_height = _line_height(self.font_size)
         radius = self.font_size * SUBSECTION_MARKER_RADIUS_RATIO
         text_offset = 2 * radius + SUBSECTION_MARKER_GAP
@@ -105,7 +105,7 @@ class Paragraph:
     text: str
     font_size: float
 
-    def render(self, theme: Theme, left: float, top: float, width: float) -> RenderedComponent:
+    def render(self, theme: ThemeData, left: float, top: float, width: float) -> RenderedComponent:
         segments = parse_markup(self.text)
         lines = wrap_into_lines(segments, self.font_size, width)
         line_height = _line_height(self.font_size)
@@ -127,7 +127,7 @@ class Image:
     image: ImageData
     requested_width: float | None = None
 
-    def render(self, theme: Theme, left: float, top: float, width: float) -> RenderedComponent:
+    def render(self, theme: ThemeData, left: float, top: float, width: float) -> RenderedComponent:
         target_width = (
             self.requested_width
             if self.requested_width is not None
@@ -194,11 +194,11 @@ def _text_element(
     )
 
 
-def _segments_markup(segments: list[TextSegment], theme: Theme) -> str:
+def _segments_markup(segments: list[TextSegment], theme: ThemeData) -> str:
     return "".join(_segment_markup(segment, theme) for segment in segments)
 
 
-def _segment_markup(segment: TextSegment, theme: Theme) -> str:
+def _segment_markup(segment: TextSegment, theme: ThemeData) -> str:
     content = escape(segment.text)
     if not segment.styles:
         return content
@@ -215,7 +215,7 @@ def _segment_markup(segment: TextSegment, theme: Theme) -> str:
     return f'<tspan {" ".join(attributes)}>{content}</tspan>'
 
 
-def _style_color(theme: Theme, style: Style) -> str:
+def _style_color(theme: ThemeData, style: Style) -> str:
     colors: dict[Style, str] = {
         Style.HIGHLIGHT: theme["highlight"],
         Style.UNDERLINE: theme["underline"],
@@ -256,7 +256,7 @@ class Table:
     column_dividers: bool
     highlighted_words: tuple[str, ...] = ()
 
-    def render(self, theme: Theme, left: float, top: float, width: float) -> RenderedComponent:
+    def render(self, theme: ThemeData, left: float, top: float, width: float) -> RenderedComponent:
         total_weight = sum(self.weights)
         column_widths = [width * weight /
                          total_weight for weight in self.weights]
@@ -295,7 +295,7 @@ class Table:
         )
         return RenderedComponent(svg=svg, height=height)
 
-    def _body_cell(self, text: str, theme: Theme, column_width: float) -> list[str]:
+    def _body_cell(self, text: str, theme: ThemeData, column_width: float) -> list[str]:
         segments = parse_markup(text)
         lines = wrap_into_lines(segments, self.font_size,
                                 column_width - 2 * self.cell_padding)
@@ -306,7 +306,7 @@ class Table:
         return line_count * _line_height(self.font_size) + 2 * self.cell_padding
 
     def _background_markup(
-        self, theme: Theme, left: float, top: float, width: float, height: float,
+        self, theme: ThemeData, left: float, top: float, width: float, height: float,
         row_tops: list[float], row_heights: list[float],
     ) -> str:
         clip_id = f"table-clip-{left:.0f}-{top:.0f}"
@@ -324,7 +324,8 @@ class Table:
         return (
             clip
             + f'<g clip-path="url(#{clip_id})">'
-            + _filled_rect(left, top, width, height, theme["table_background"])
+            + _filled_rect(left, top, width, height,
+                           theme["table_background"])
             + _filled_rect(left, top, width,
                            row_heights[0], theme["table_header_background"])
             + stripes
@@ -332,7 +333,7 @@ class Table:
         )
 
     def _dividers_markup(
-        self, theme: Theme, left: float, top: float, width: float, height: float,
+        self, theme: ThemeData, left: float, top: float, width: float, height: float,
         column_lefts: list[float], row_tops: list[float], row_heights: list[float],
     ) -> str:
         color = theme["table_divider"]
@@ -348,7 +349,7 @@ class Table:
         return "".join(lines)
 
     def _text_markup(
-        self, theme: Theme, table_rows: list[list[list[str]]],
+        self, theme: ThemeData, table_rows: list[list[list[str]]],
         column_lefts: list[float], column_widths: list[float], row_tops: list[float],
     ) -> str:
         parts: list[str] = []
@@ -379,7 +380,7 @@ class Table:
         return column_left + column_width / 2
 
     def _border_markup(
-        self, theme: Theme, left: float, top: float, width: float, height: float
+        self, theme: ThemeData, left: float, top: float, width: float, height: float
     ) -> str:
         inset = TABLE_LINE_WIDTH / 2
         return (
@@ -440,7 +441,7 @@ DIVIDER_COVERAGE = 1
 class Divider:
     coverage: float
 
-    def render(self, theme: Theme, left: float, top: float, width: float) -> RenderedComponent:
+    def render(self, theme: ThemeData, left: float, top: float, width: float) -> RenderedComponent:
         line_width = width * self.coverage
         line_left = left + (width - line_width) / 2
         svg = (
