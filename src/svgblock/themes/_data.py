@@ -20,7 +20,6 @@ class ThemeData(TypedDict):
     table_stripe_background: str
     table_border: str
     divider: str
-    highlight: str
     underline: str
     strikethrough: str
     italic: str
