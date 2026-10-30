@@ -39,6 +39,7 @@
   <li><a href="#customization">🛠️ Customization</a>
     <ul>
       <li><a href="#creating-your-own-theme">Creating your own theme</a></li>
+      <li><a href="#editing-a-theme">Editing a theme</a></li>
       <li><a href="#constants-reference">Constants reference</a></li>
     </ul>
   </li>
@@ -84,10 +85,10 @@ pip install svgblock
 </p>
 
 ```python
-from svgblock import Block
+from svgblock import Block, Theme
 
 (
-    Block(theme="neon", width=900, animation="slide-up")
+    Block(theme=Theme.NEON, width=900, animation="slide-up")
     .title("Hello, I'm Bob")
     .text("I build **small tools** in **pure Python** and I love open source.")
     .subsection("What I am learning")
@@ -121,10 +122,10 @@ python generate_blocks.py
 </p>
 
 ```python
-from svgblock import Block
+from svgblock import Block, Theme
 
-Block(theme="dracula", animation="fade").title("About me").text("...").save("assets/about.svg")
-Block(theme="nord", animation="pop").title("Projects").text("...").save("assets/projects.svg")
+Block(theme=Theme.DRACULA, animation="fade").title("About me").text("...").save("assets/about.svg")
+Block(theme=Theme.NORD, animation="pop").title("Projects").text("...").save("assets/projects.svg")
 ```
 
 <p align="center">
@@ -147,7 +148,9 @@ pip install -e .
 </p>
 
 ```python
-Block(theme="red", width=900, animation="fade")
+from svgblock import Block, Theme
+
+Block(theme=Theme.RED, width=900, animation="fade")
 ```
 
 <a id="adding-content"></a>
@@ -158,7 +161,7 @@ Block(theme="red", width=900, animation="fade")
 
 ```python
 (
-    Block(theme="coffee")
+    Block(theme=Theme.COFFEE)
     .title("Projects")
     .text("A few things I built.", font_size=18)
     .subsection("Log parser")
@@ -190,10 +193,10 @@ Block(theme="red", width=900, animation="fade")
 </p>
 
 ```python
-from svgblock import Block, Column
+from svgblock import Block, Column, Theme
 
 (
-    Block(theme="nord")
+    Block(theme=Theme.NORD)
     .columns(
         Column(1).subsection("Weight 1").text("A narrow column."),
         Column(2).subsection("Weight 2").text("A column twice as wide."),
@@ -231,7 +234,7 @@ from svgblock import Block, Column
 
 ```python
 (
-    Block(theme="neon")
+    Block(theme=Theme.NEON)
     .columns(
         Column().image("assets/logo.png", width=350),
         Column().subsection("A logo beside the text").text("The image sits in a column and the text takes the rest of the width"),
@@ -286,18 +289,41 @@ Block(animation="slide-up", animation_loop=5)
 </p>
 
 ```python
-"mytheme": {
-    "background_center": "#1B2B34", "background_edge": "#0B1014",
-    "border_start": "#6699CC", "border_end": "#223344",
-    "title_text": "#99C794", "title_bar": "#99C794",
-    "subsection_text": "#FAC863", "subsection_marker": "#FAC863",
-    "text": "#D8DEE9", "highlight": "#FFFFFF",
-    "underline": "#6699CC", "strikethrough": "#65737E", "italic": "#C0C5CE",
-    "table_background": "#10181D", "table_header_background": "#223540",
-    "table_header_text": "#99C794", "table_text": "#D8DEE9",
-    "table_divider": "#33505F", "table_stripe_background": "#15222A",
-    "table_border": "#33505F", "divider": "#6699CC",
-},
+from svgblock import Block, ThemeData
+
+ocean = ThemeData(
+    background_center="#1B2B34", background_edge="#0B1014",
+    border_start="#6699CC", border_end="#223344",
+    title_text="#99C794", title_bar="#99C794",
+    subsection_text="#FAC863", subsection_marker="#FAC863",
+    text="#D8DEE9", highlight="#FFFFFF",
+    underline="#6699CC", strikethrough="#65737E", italic="#C0C5CE",
+    table_background="#10181D", table_header_background="#223540",
+    table_header_text="#99C794", table_text="#D8DEE9",
+    table_divider="#33505F", table_stripe_background="#15222A",
+    table_border="#33505F", divider="#6699CC",
+)
+
+Block(theme=ocean).title("Ocean").text("A theme created in my own code.").save("assets/ocean.svg")
+```
+
+<a id="editing-a-theme"></a>
+
+<p align="center">
+  <img src="assets/edit_theme.svg" alt="Editing a theme" width="900">
+</p>
+
+```python
+from svgblock import Block, Theme
+
+# Changes the theme for the whole program: set it before building the blocks
+Theme.RED.value.update(title_text="#FF9900", title_bar="#FF9900")
+Block(theme=Theme.RED).title("Orange titles on the red theme")
+
+# Makes a variation and keeps the original untouched
+softer_red = Theme.RED.value.copy()
+softer_red.update(background_center="#2A1414", text="#FFD9D9")
+Block(theme=softer_red).title("A softer red")
 ```
 
 <a id="constants-reference"></a>
@@ -313,6 +339,16 @@ Block(animation="slide-up", animation_loop=5)
 <p align="center">
   <img src="assets/themes_overview.svg" alt="Themes" width="900">
 </p>
+
+```python
+from svgblock import Block, Theme
+
+Block(theme=Theme.DRACULA)
+
+# List every ready-made theme
+for theme in Theme:
+    print(theme.name)
+```
 
 <a id="1-dark-colors"></a>
 
