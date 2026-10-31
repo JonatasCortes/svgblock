@@ -890,9 +890,10 @@ def animations_parameters() -> Block:
                  "and **FadeIn** and **FadeOut** have no such parameter."],
                 ["focus", "True or False",
                  "Whether the block also starts out of focus, with a blur that clears as "
-                 "it appears. The exit blurs it again."],
+                 "it appears. The exit blurs it again. __Safari does not draw the blur, so there the block only fades.__"],
                 ["blur", "A number greater than 0",
-                 "How many pixels of blur **FocusIn** and **FocusOut** start or end with."],
+                 "How many pixels of blur **FocusIn** and **FocusOut** start or end with."
+                 "__Safari does not draw it: **FocusIn** and **FocusOut** only fade there.__"],
                 ["start_scale", "A number greater than 0 and at most 1",
                  "The size **PopIn** starts from and **PopOut** ends at, where 1 is the "
                  "normal size: 0.8 is 80%."],
@@ -1178,6 +1179,9 @@ def animations_errors() -> Block:
               "page to see it again.")
         .text("• Some image viewers and editors do not run animations. Open the file in a "
               "browser to check.")
+        .text("• The blur of **FocusIn**, **FocusOut** and focus=True is not drawn by Safari. The "
+              "rest of the animation still plays, so use a fade or another animation if the blur "
+              "matters to you.")
     )
 
 
@@ -1527,6 +1531,9 @@ def troubleshooting() -> Block:
                 ["Spring or Bounce does not look right",
                  "They use the CSS linear() function. In an old browser or viewer, the easing "
                  "may be ignored. Open the file in a recent browser to check."],
+                ["The blur of FocusIn or focus=True does not show in Safari",
+                 "Safari does not draw the blur on SVG. The animation still plays without it, "
+                 "so the block only fades. Open the file in another browser to see the blur."],
                 ["AttributeError: Theme has no attribute ...",
                  "The theme does not exist in the Theme enum. Names are uppercase, exactly as "
                  "shown in the Themes section (for example Theme.NEON). To use a color scheme "
