@@ -70,7 +70,7 @@ from ._presets import (
 )
 from ._sequence import Sequence
 
-__all__ = [
+__all__: list[str] = [
     "BaseAnimation",
     "EnterAnimation",
     "ExitAnimation",

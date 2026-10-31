@@ -3,7 +3,8 @@ from dataclasses import dataclass
 from functools import partial
 from pathlib import Path
 from src.svgblock import (Block, Column, Theme, ThemeData, BaseAnimation,
-                          DropIn, FadeIn, Hide, Sequence, Show, animations)
+                          DropIn, FadeIn, Hide, Sequence, Show)
+from src.svgblock.components import animations
 
 ANIMATION_NAMES = {
     name: value

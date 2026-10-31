@@ -3,13 +3,17 @@ from dataclasses import dataclass
 from ._markup import TextSegment
 from ._width import measure_text_width
 
-_WORD_OR_SPACE = re.compile(r"\s+|\S+")
-
 
 @dataclass(frozen=True)
 class _Word:
     pieces: tuple[TextSegment, ...]
     trailing_space: TextSegment | None
+
+
+def wrap_bold_text(text: str, font_size: float, max_width: float) -> list[str]:
+    segments = [TextSegment(text=text)]
+    lines = wrap_into_lines(segments, font_size, max_width, bold=True)
+    return ["".join(segment.text for segment in line) for line in lines] or [""]
 
 
 def wrap_into_lines(
@@ -40,7 +44,7 @@ def _split_into_words(segments: list[TextSegment]) -> list[_Word]:
     words: list[_Word] = []
     pieces: list[TextSegment] = []
     for segment in segments:
-        for part in _WORD_OR_SPACE.findall(segment.text):
+        for part in re.compile(r"\s+|\S+").findall(segment.text):
             piece = TextSegment(text=part, styles=segment.styles)
             if not part.isspace():
                 pieces.append(piece)

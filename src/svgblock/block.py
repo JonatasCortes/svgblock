@@ -1,7 +1,7 @@
 from pathlib import Path
-from .animations import BaseAnimation, build_animation_css
-from .composition import Composer
-from .themes import build_frame, Theme, ThemeData
+from .components.animations import BaseAnimation, build_animation_css
+from .components._composer import Composer
+from .components.themes import build_frame, Theme, ThemeData
 
 
 class Block(Composer):
