@@ -1,8 +1,7 @@
 from pathlib import Path
 from .animations import BaseAnimation, build_animation_css
 from .composition import Composer
-from .frame import build_frame
-from .themes import Theme, ThemeData
+from .themes import build_frame, Theme, ThemeData
 
 MARGIN_TOLERANCE = 0.5
 MAX_LAYOUT_PASSES = 8

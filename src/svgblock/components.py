@@ -3,8 +3,7 @@ from typing import Literal, Protocol
 from xml.sax.saxutils import escape
 
 from .image_reader import ImageData
-from .line_parser import wrap_into_lines
-from .markup import Style, TextSegment, parse_markup
+from .text import wrap_into_lines, Style, TextSegment, parse_markup
 from .themes import ThemeData
 
 LINE_HEIGHT_RATIO = 1.5
