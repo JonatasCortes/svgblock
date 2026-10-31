@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="115.503" viewBox="0 0 400 115.503"><style>
+@keyframes sequence-adbab620 {
+0% { opacity: 0; transform: translate(0px, 40px) rotate(0deg) scale(1, 1); animation-timing-function: linear(0, 0.008, 0.0306, 0.0657, 0.1112, 0.1651, 0.2256, 0.2908, 0.3593, 0.4296, 0.5002, 0.5701, 0.6383, 0.7038, 0.7661, 0.8244, 0.8785, 0.9278, 0.9723, 1.0118, 1.0464, 1.076, 1.1008, 1.121, 1.1368, 1.1486, 1.1566, 1.1611, 1.1626, 1.1613, 1.1576, 1.1519, 1.1445, 1.1357, 1.1259, 1.1152, 1.104, 1.0926, 1.081, 1.0696, 1.0585, 1.0478, 1.0376, 1.028, 1.0192, 1.0111, 1.0038, 0.9974, 0.9917, 0.9868, 0.9828, 0.9794, 0.9768, 0.9749, 0.9735, 0.9728, 0.9725, 0.9727, 0.9732, 0.9742, 0.9753, 0.9767, 0.9783, 0.98, 0.9819, 0.9837, 0.9856, 0.9874, 0.9892, 0.9909, 0.9926, 0.9941, 0.9955, 0.9968, 0.998, 0.999, 1, 1.0007, 1.0014, 1.0019, 1.0023, 1.0026, 1.0028, 1.0029, 1.0029, 1.0029, 1.0028, 1.0026, 1.0024, 1.0022, 1.0019, 1.0016, 1.0013, 1.001, 1.0006, 1.0003, 1); } 31.818082% { opacity: 1; transform: translate(0px, 0px) rotate(0deg) scale(1, 1); } 31.818182% { opacity: 1; transform: translate(0px, 0px) rotate(0deg) scale(1, 1); animation-timing-function: linear; } 100% { opacity: 1; transform: translate(0px, 0px) rotate(0deg) scale(1, 1); }
+}
+.sequence-adbab620 {
+  animation: sequence-adbab620 4.4s linear 0s infinite both;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sequence-adbab620 { animation: none; }
+}
+</style><g transform="translate(0 6.50286)"><g class="sequence-adbab620"><defs><radialGradient id="background" cx="0.5" cy="0.5" r="0.7"><stop offset="0" stop-color="#121324"/><stop offset="1" stop-color="#080811"/></radialGradient><linearGradient id="border" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF0055"/><stop offset="1" stop-color="#7000FF"/></linearGradient></defs><rect x="1" y="1" width="398" height="107" rx="15" fill="url(#background)" stroke="none" stroke-width="2"/><rect x="1" y="1" width="398" height="107" rx="15" fill="none" stroke="url(#border)" stroke-width="2"/><g font-family="Arial, Helvetica, sans-serif"><rect x="24.0" y="27.0" width="4" height="24.0" rx="2" fill="#FF0055"/><text x="39.0" y="46.0" font-size="20" fill="#FF1F6E" font-weight="700">SPRING</text><text x="24.0" y="79.4" font-size="14" fill="#F2F2FF"><tspan fill="#FF6BA8" font-weight="700" text-decoration="underline">RiseIn(easing=Spring(), duration=1.4)</tspan></text></g></g></g></svg>

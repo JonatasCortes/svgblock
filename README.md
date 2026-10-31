@@ -7,8 +7,8 @@
   <img src="https://img.shields.io/badge/python-3.10+-3776AB?logo=python&logoColor=white" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/dependencies-none-2ea44f" alt="No dependencies">
   <img src="https://img.shields.io/badge/themes-50-ff0055" alt="50 themes">
-  <img src="https://img.shields.io/badge/animations-5-8A2BE2" alt="5 animations">
-  <img src="https://img.shields.io/badge/easings-8-00B8D9" alt="8 easings">
+<img src="https://img.shields.io/badge/animations-31-8A2BE2" alt="31 animations">
+<img src="https://img.shields.io/badge/easings-26-00B8D9" alt="26 easings">
   <img src="https://img.shields.io/badge/output-SVG-FFB13B?logo=svg&logoColor=white" alt="SVG output">
 </p>
 
@@ -95,7 +95,7 @@ pip install svgblock
 </p>
 
 ```python
-rom svgblock import Block, Rise, Theme
+from svgblock import Block, Rise, Theme
 
 (
     Block(theme=Theme.NEON, width=900, animation=Rise())
@@ -132,10 +132,10 @@ python generate_blocks.py
 </p>
 
 ```python
-from svgblock import Block, Fade, Pop, Theme
+from svgblock import Block, FadeIn, PopIn, Theme
 
-Block(theme=Theme.DRACULA, animation=Fade()).title("About me").text("...").save("assets/about.svg")
-Block(theme=Theme.NORD, animation=Pop()).title("Projects").text("...").save("assets/projects.svg")
+Block(theme=Theme.DRACULA, animation=FadeIn()).title("About me").text("...").save("assets/about.svg")
+Block(theme=Theme.NORD, animation=PopIn()).title("Projects").text("...").save("assets/projects.svg")
 ```
 
 <p align="center">
@@ -158,9 +158,9 @@ pip install -e .
 </p>
 
 ```python
-from svgblock import Block, Fade, Theme
+from svgblock import Block, FadeIn, Theme
 
-Block(theme=Theme.RED, width=900, padding=32, animation=Fade())
+Block(theme=Theme.RED, width=900, padding=32, animation=FadeIn())
 ```
 
 <a id="adding-content"></a>
@@ -267,16 +267,19 @@ from svgblock import Block, Column, Theme
 </p>
 
 ```python
-from svgblock import Block, Pop, Rise, Sequence, Show
+from svgblock import Block, PopIn, RiseIn, RiseOut, Sequence, Show, Hide
 
 # Default values
-Block(animation=Rise())
+Block(animation=RiseIn())
 
 # A configured animation
-Block(animation=Rise(distance=80, duration=1.2))
+Block(animation=RiseIn(distance=80, duration=1.2))
 
 # A sequence: enter, rest for 3 seconds and enter again, forever
-Block(animation=Sequence(Pop(), Show(3), loop_limit=None))
+Block(animation=Sequence(PopIn(), Show(3), loop_limit=None))
+
+# Enter, rest and leave, forever
+Block(animation=Sequence(RiseIn(), Show(2), RiseOut(), Hide(0.5), loop_limit=None))
 ```
 
 <a id="base-animations"></a>
@@ -286,11 +289,37 @@ Block(animation=Sequence(Pop(), Show(3), loop_limit=None))
 </p>
 
 <p align="center">
-  <img src="assets/animation_fade.svg" alt="fade animation" width="49%">
-  <img src="assets/animation_rise.svg" alt="rise animation" width="49%">
-  <img src="assets/animation_drop.svg" alt="drop animation" width="49%">
-  <img src="assets/animation_pop.svg" alt="pop animation" width="49%">
+  <img src="assets/animation_fade_in.svg" alt="fade in animation" width="49%">
+  <img src="assets/animation_fade_out.svg" alt="fade out animation" width="49%">
+  <img src="assets/animation_focus_in.svg" alt="focus in animation" width="49%">
+  <img src="assets/animation_focus_out.svg" alt="focus out animation" width="49%">
+  <img src="assets/animation_rise_in.svg" alt="rise in animation" width="49%">
+  <img src="assets/animation_rise_out.svg" alt="rise out animation" width="49%">
+  <img src="assets/animation_drop_in.svg" alt="drop in animation" width="49%">
+  <img src="assets/animation_drop_out.svg" alt="drop out animation" width="49%">
+  <img src="assets/animation_slide_in.svg" alt="slide in animation" width="49%">
+  <img src="assets/animation_slide_out.svg" alt="slide out animation" width="49%">
+  <img src="assets/animation_pop_in.svg" alt="pop in animation" width="49%">
+  <img src="assets/animation_pop_out.svg" alt="pop out animation" width="49%">
+  <img src="assets/animation_zoom_in.svg" alt="zoom in animation" width="49%">
+  <img src="assets/animation_zoom_out.svg" alt="zoom out animation" width="49%">
+  <img src="assets/animation_spin_in.svg" alt="spin in animation" width="49%">
+  <img src="assets/animation_spin_out.svg" alt="spin out animation" width="49%">
+  <img src="assets/animation_flip_in.svg" alt="flip in animation" width="49%">
+  <img src="assets/animation_flip_out.svg" alt="flip out animation" width="49%">
+  <img src="assets/animation_unfold_in.svg" alt="unfold in animation" width="49%">
+  <img src="assets/animation_unfold_out.svg" alt="unfold out animation" width="49%">
+  <img src="assets/animation_flicker_in.svg" alt="flicker in animation" width="49%">
+  <img src="assets/animation_flicker_out.svg" alt="flicker out animation" width="49%">
+  <img src="assets/animation_glitch_in.svg" alt="glitch in animation" width="49%">
+  <img src="assets/animation_glitch_out.svg" alt="glitch out animation" width="49%">
   <img src="assets/animation_pulse.svg" alt="pulse animation" width="49%">
+  <img src="assets/animation_float.svg" alt="float animation" width="49%">
+  <img src="assets/animation_sway.svg" alt="sway animation" width="49%">
+  <img src="assets/animation_rotate.svg" alt="rotate animation" width="49%">
+  <img src="assets/animation_drift.svg" alt="drift animation" width="49%">
+  <img src="assets/animation_shake.svg" alt="shake animation" width="49%">
+  <img src="assets/animation_jelly.svg" alt="jelly animation" width="49%">
 </p>
 
 <a id="animation-parameters"></a>
@@ -300,20 +329,35 @@ Block(animation=Sequence(Pop(), Show(3), loop_limit=None))
 </p>
 
 ```python
-from svgblock import Drop, Fade, Linear, Pop, Pulse, Rise
+from svgblock import (DropIn, FadeIn, FlipIn, FocusIn, Jelly, Linear, PopIn, Pulse,
+                      RiseIn, Shake, SlideIn, SpinIn, Sway, UnfoldIn)
 
-Rise(distance=80, duration=1.6, fade=False)
-Drop(distance=20, duration=0.4)
-Pop(start_scale=0.3, duration=1.2)
+RiseIn(distance=80, duration=1.6, fade=False)
+DropIn(distance=20, duration=0.4)
+SlideIn(direction="left", distance=120)
+PopIn(start_scale=0.3, duration=1.2)
+SpinIn(angle=-120, focus=True)
+FlipIn(axis="vertical")
+UnfoldIn(edge="left", fade=True)
+FocusIn(blur=16, duration=1.6)
 Pulse(amount=0.1, duration=1, loop_limit=4)
-Fade(duration=2, easing=Linear())
+Sway(angle=8, pivot="bottom", loop_limit=None)
+Shake(amount=16, shakes=10)
+FadeIn(duration=2, easing=Linear())
 ```
 
 <p align="center">
-  <img src="assets/animation_rise_custom.svg" alt="customized rise animation" width="49%">
-  <img src="assets/animation_drop_custom.svg" alt="customized drop animation" width="49%">
-  <img src="assets/animation_pop_custom.svg" alt="customized pop animation" width="49%">
+  <img src="assets/animation_rise_in_custom.svg" alt="customized rise in animation" width="49%">
+  <img src="assets/animation_drop_in_custom.svg" alt="customized drop in animation" width="49%">
+  <img src="assets/animation_slide_in_custom.svg" alt="customized slide in animation" width="49%">
+  <img src="assets/animation_pop_in_custom.svg" alt="customized pop in animation" width="49%">
+  <img src="assets/animation_spin_in_custom.svg" alt="customized spin in animation" width="49%">
+  <img src="assets/animation_flip_in_custom.svg" alt="customized flip in animation" width="49%">
+  <img src="assets/animation_unfold_in_custom.svg" alt="customized unfold in animation" width="49%">
+  <img src="assets/animation_focus_in_custom.svg" alt="customized focus in animation" width="49%">
   <img src="assets/animation_pulse_custom.svg" alt="customized pulse animation" width="49%">
+  <img src="assets/animation_sway_custom.svg" alt="customized sway animation" width="49%">
+  <img src="assets/animation_shake_custom.svg" alt="customized shake animation" width="49%">
 </p>
 
 <a id="easings"></a>
@@ -323,19 +367,22 @@ Fade(duration=2, easing=Linear())
 </p>
 
 ```python
-from svgblock import CubicBezier, EaseInOut, Rise, Steps
+from svgblock import Bounce, CubicBezier, DropIn, EaseOutBack, RiseIn, Spring, Steps
 
-Rise(easing=EaseInOut())
-Rise(easing=CubicBezier(0.4, 0, 0.2, 1))
-Rise(easing=Steps(10))
+RiseIn(easing=EaseOutBack())
+RiseIn(easing=CubicBezier(0.4, 0, 0.2, 1))
+RiseIn(easing=Steps(10))
+RiseIn(easing=Spring(), duration=1.4)
+DropIn(distance=120, fade=False, easing=Bounce(), duration=1.4)
 ```
 
 <p align="center">
   <img src="assets/animation_easing_back.svg" alt="overshoot easing" width="49%">
   <img src="assets/animation_easing_bezier.svg" alt="custom curve easing" width="49%">
   <img src="assets/animation_easing_steps.svg" alt="steps easing" width="49%">
+  <img src="assets/animation_easing_spring.svg" alt="spring easing" width="49%">
+  <img src="assets/animation_easing_bounce.svg" alt="bounce easing" width="49%">
 </p>
-
 <a id="repeating"></a>
 
 <p align="center">
@@ -343,11 +390,12 @@ Rise(easing=Steps(10))
 </p>
 
 ```python
-from svgblock import Pulse
+from svgblock import Float, Pulse
 
 Pulse()                  # runs once
 Pulse(loop_limit=4)      # runs five times
 Pulse(loop_limit=None)   # never stops
+Float(loop_limit=None)   # any ambient animation works the same way
 ```
 
 <a id="sequences"></a>
@@ -357,16 +405,24 @@ Pulse(loop_limit=None)   # never stops
 </p>
 
 ```python
-from svgblock import Hide, Show, Pop, Pulse, Rise, Sequence
+from svgblock import (Float, Hide, PopIn, Pulse, RiseIn, RiseOut, Sequence, Show,
+                      ZoomIn, ZoomOut)
 
-Sequence(Pop(), Show(3), loop_limit=None)
+Sequence(PopIn(), Show(3), loop_limit=None)
 
-Sequence(Hide(0.5), Rise(), Pulse(loop_limit=1), Show(2), loop_limit=None)
+Sequence(Hide(0.5), RiseIn(), Pulse(loop_limit=1), Show(2), loop_limit=None)
+
+# Enter, float for three runs, leave
+Sequence(RiseIn(), Float(loop_limit=2), RiseOut(), loop_limit=None)
+
+Sequence(ZoomIn(), Show(2), ZoomOut(), Hide(0.5), loop_limit=None)
 ```
 
 <p align="center">
   <img src="assets/animation_seq_pop_show.svg" alt="replay sequence" width="49%" valign="top">
   <img src="assets/animation_seq_hide_pulse_show.svg" alt="enter, then pulse sequence" width="49%" valign="top">
+  <img src="assets/animation_seq_rise_float.svg" alt="enter, float, then leave sequence" width="49%" valign="top">
+  <img src="assets/animation_seq_zoom_in_out.svg" alt="zoom in and out sequence" width="49%" valign="top">
 </p>
 
 <a id="animation-errors"></a>
@@ -376,13 +432,17 @@ Sequence(Hide(0.5), Rise(), Pulse(loop_limit=1), Show(2), loop_limit=None)
 </p>
 
 ```python
-from svgblock import CubicBezier, Pulse, Rise, Sequence, Show
+from svgblock import (CubicBezier, EaseOut, Jelly, PopIn, Pulse, RiseIn, Rotate,
+                      Sequence, Show)
 
-Rise(distance=-10)                 # ValueError: distance must be 0 or more
-Rise(loop_limit=2)                 # TypeError: unexpected keyword argument 'loop_limit'
-Rise(easing="ease-out")            # TypeError: easing must be an Easing, such as EaseOut() ...
+RiseIn(distance=-10)               # ValueError: distance must be 0 or more
+RiseIn(loop_limit=2)               # TypeError: unexpected keyword argument 'loop_limit'
+RiseIn(easing="ease-out")          # TypeError: easing must be an Easing, such as EaseOut() ...
+PopIn(easing=EaseOut())            # TypeError: unexpected keyword argument 'easing'
+Rotate(angle=0)                    # ValueError: angle must not be 0
+Jelly(amount=1.5)                  # ValueError: amount must be greater than 0 and less than 1
 CubicBezier(1.5, 0, 0.5, 1)        # ValueError: x1 must be between 0 and 1
-Sequence(Rise, Pulse())            # TypeError: A sequence step must be an animation, such as Rise() ...
+Sequence(RiseIn, Pulse())          # TypeError: A sequence step must be an animation, such as RiseIn() ...
 
 # ValueError: the Show after an infinite step would never play
 Sequence(Pulse(loop_limit=None), Show(1))
