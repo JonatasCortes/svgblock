@@ -1,6 +1,6 @@
-from .animations import Animation
+from .animations import *
 from .block import Block
 from .composition import Column
 from .themes import ThemeData, Theme
 
-__all__ = ["Animation", "Block", "Column", "ThemeData", "Theme"]
+__all__ = ["animations", "Block", "Column", "ThemeData", "Theme"]

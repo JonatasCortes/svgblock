@@ -1,5 +1,5 @@
 from pathlib import Path
-from .animations import Animation, BaseAnimation, build_animation_css
+from .animations import BaseAnimation, build_animation_css
 from .composition import Composer
 from .frame import build_frame
 from .themes import Theme, ThemeData
@@ -12,35 +12,49 @@ class Block(Composer):
         theme: ThemeData | Theme = Theme.NEON,
         width: float = 800,
         padding: int = 24,
-        animation: BaseAnimation | str | None = None,
-        visible: bool = True,
+        animation: BaseAnimation | None = None,
+        hide_frame: bool = False,
     ) -> None:
         super().__init__()
         if isinstance(theme, Theme):
             theme = theme.value
         self._theme = theme
         self._width = width
-        self._padding = padding if visible else 0
-        self._animation = Animation.resolve(animation)
-        self._visible = visible
+        self._padding = padding if not hide_frame else 0
+        self._animation = animation
+        self._hide_frame = hide_frame
 
     def render(self) -> str:
-        growth = 1.0 if self._animation is None else self._animation.max_scale
+        if self._animation is None:
+            growth = 1.0
+            left = top = right = bottom = 0.0
+        else:
+            growth = self._animation.max_scale
+            left, top, right, bottom = self._animation.overflow
 
-        block_width = self._width / growth
+        available_width = self._width - left - right
+        if available_width <= 0:
+            raise ValueError(
+                f"Animation moves the block {left + right:g}px sideways, "
+                f"which does not fit in width {self._width:g}."
+            )
+
+        block_width = available_width / growth
         content_width = block_width - 2 * self._padding
         rendered = self._render_components(
             self._theme, self._padding, self._padding, content_width
         )
         block_height = rendered.height + 2 * self._padding
-        height = block_height * growth
 
-        margin_x = (self._width - block_width) / 2
-        margin_y = (height - block_height) / 2
+        scaled_height = block_height * growth
+        height = scaled_height + top + bottom
+
+        margin_x = left + (block_width * growth - block_width) / 2
+        margin_y = top + (scaled_height - block_height) / 2
 
         frame_markup = (
             build_frame(self._theme, block_width, block_height)
-            if self._visible else ""
+            if not self._hide_frame else ""
         )
         if self._animation is None:
             style = ""
