@@ -3,11 +3,11 @@ from .animations import BaseAnimation, build_animation_css
 from .composition import Composer
 from .themes import build_frame, Theme, ThemeData
 
-MARGIN_TOLERANCE = 0.5
-MAX_LAYOUT_PASSES = 8
-
 
 class Block(Composer):
+
+    _margin_tolerance: float = 0.5
+    _max_layout_passes: int = 8
 
     def __init__(
         self,
@@ -50,13 +50,13 @@ class Block(Composer):
         else:
             growth = self._animation.max_scale
             margins: tuple[float, ...] = (0.0, 0.0, 0.0, 0.0)
-            for _ in range(MAX_LAYOUT_PASSES):
+            for _ in range(self._max_layout_passes):
                 block_width, block_height, rendered = self._layout(
                     growth, margins)
                 needed = self._animation.margins(block_width, block_height)
                 merged = tuple(max(a, b) for a, b in zip(margins, needed))
                 stable = all(
-                    abs(new - old) <= MARGIN_TOLERANCE
+                    abs(new - old) <= self._margin_tolerance
                     for new, old in zip(merged, margins)
                 )
                 margins = merged
