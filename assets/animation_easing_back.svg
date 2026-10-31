@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="400" height="152.912" viewBox="0 0 400 152.912"><style>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="112.912" viewBox="0 0 400 112.912"><style>
 @keyframes sequence-e224775a {
 0% { opacity: 0; transform: translate(0px, 40px) scale(1); animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); } 21.052532% { opacity: 1; transform: translate(0px, 0px) scale(1); } 21.052632% { opacity: 1; transform: translate(0px, 0px) scale(1); animation-timing-function: linear; } 100% { opacity: 1; transform: translate(0px, 0px) scale(1); }
 }

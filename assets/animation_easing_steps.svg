@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="400" height="149" viewBox="0 0 400 149"><style>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="109" viewBox="0 0 400 109"><style>
 @keyframes sequence-5ae7104e {
 0% { opacity: 0; transform: translate(0px, 40px) scale(1); animation-timing-function: steps(10); } 21.052532% { opacity: 1; transform: translate(0px, 0px) scale(1); } 21.052632% { opacity: 1; transform: translate(0px, 0px) scale(1); animation-timing-function: linear; } 100% { opacity: 1; transform: translate(0px, 0px) scale(1); }
 }

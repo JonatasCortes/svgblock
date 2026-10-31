@@ -104,14 +104,16 @@ class BaseAnimation(ABC):
 
     @property
     def overflow(self) -> tuple[float, float, float, float]:
-        x_low, x_high = self.extent("x")
-        y_low, y_high = self.extent("y")
-        return (
-            max(0.0, -x_low),
-            max(0.0, -y_low),
-            max(0.0, x_high),
-            max(0.0, y_high),
-        )
+        frames = self.keyframes()
+        result = {"x": (0.0, 0.0), "y": (0.0, 0.0)}
+        for attribute in ("x", "y"):
+            values = [getattr(frame.pose, attribute) for frame in frames]
+            floor, ceiling = min(values), max(values)
+            low, high = self.extent(attribute)
+            result[attribute] = (max(0.0, floor - low),
+                                 max(0.0, high - ceiling))
+        (x_before, x_after), (y_before, y_after) = result["x"], result["y"]
+        return x_before, y_before, x_after, y_after
 
     @property
     def iterations(self) -> int | None:
