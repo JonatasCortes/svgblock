@@ -3,18 +3,25 @@ from dataclasses import dataclass
 from functools import partial
 from pathlib import Path
 
-from src.svgblock import Animation, Block, Column, Theme, ThemeData
+from src.svgblock import (Block, Column, Theme, ThemeData, BaseAnimation,
+                          Drop, Fade, Sequence, Show, animations)
+
+ANIMATION_NAMES = {
+    name: value
+    for name, value in vars(animations).items()
+    if isinstance(value, type)
+}
 
 ASSETS_DIR = Path("assets")
 LOGO_PATH = (ASSETS_DIR / "svgblock_logo.png").as_posix()
 
 DOC_THEME = Theme.NEON
 DOC_WIDTH = 800
-DOC_ANIMATION = Animation.FADE
+DOC_ANIMATION = Fade()
 
 THEME_WIDTH = 500
 ANIMATION_WIDTH = 400
-ANIMATION_LOOP_SECONDS = 4
+PREVIEW_REST_SECONDS = 3
 
 # ---------------------------------------------------------------------------
 # Pipeline
@@ -59,8 +66,8 @@ class Pipeline:
 pipeline = Pipeline(ASSETS_DIR)
 
 
-def doc_block(animation: Animation = DOC_ANIMATION) -> Block:
-    return Block(DOC_THEME, DOC_WIDTH, animation)
+def doc_block(animation: BaseAnimation | None = DOC_ANIMATION) -> Block:
+    return Block(DOC_THEME, DOC_WIDTH, animation=animation)
 
 
 # ---------------------------------------------------------------------------
@@ -108,15 +115,6 @@ DISPLAY_NAMES: dict[str, str] = {
     "solarizedlight": "Solarized Light",
 }
 
-ANIMATION_INFO: dict[str, str] = {
-    "fade": "The block fades in. This is the simplest of all and the default value for __animation__",
-    "slide-up": "The block fades in while moving up, entering from below.",
-    "slide-down": "The block fades in while moving down, entering from above.",
-    "slide-left": "The block fades in while moving left, entering from the right.",
-    "slide-right": "The block fades in while moving right, entering from the left.",
-    "pop": "The block fades in while growing slightly, from a bit smaller to its final size.",
-}
-
 THEME_COLORS: tuple[tuple[str, str], ...] = (
     ("background_center", "The center of the radial glow in the background."),
     ("background_edge", "The outer color of the background, at the edges of the block."),
@@ -142,8 +140,78 @@ THEME_COLORS: tuple[tuple[str, str], ...] = (
 )
 
 
-def animation_name(animation: Animation) -> str:
-    return animation.name.lower().replace("_", "-")
+@dataclass(frozen=True)
+class AnimationExample:
+    """A preview box in the Animations section.
+
+    The code is run to build the animation, so what the box shows is always
+    what the preview does. With replay=True the preview adds a rest and
+    starts over by itself, so nobody needs to reload the page.
+    """
+
+    slug: str
+    title: str
+    code: str
+    replay: bool = False
+
+
+BASE_EXAMPLES: tuple[AnimationExample, ...] = (
+    AnimationExample(
+        "fade", "FADE",
+        "Fade()", replay=True),
+    AnimationExample(
+        "rise", "RISE",
+        "Rise()", replay=True),
+    AnimationExample(
+        "drop", "DROP",
+        "Drop()", replay=True),
+    AnimationExample(
+        "pop", "POP",
+        "Pop()", replay=True),
+    AnimationExample(
+        "pulse", "PULSE",
+        "Pulse(loop_limit=None)"),
+)
+
+CUSTOM_EXAMPLES: tuple[AnimationExample, ...] = (
+    AnimationExample(
+        "rise_custom", "RISE, CUSTOMIZED",
+        "Rise(distance=80, duration=1.6, fade=False)", replay=True),
+    AnimationExample(
+        "drop_custom", "DROP, CUSTOMIZED",
+        "Drop(distance=20, duration=0.4)", replay=True),
+    AnimationExample(
+        "pop_custom", "POP, CUSTOMIZED",
+        "Pop(start_scale=0.3, duration=1.2)", replay=True),
+    AnimationExample(
+        "pulse_custom", "PULSE, CUSTOMIZED",
+        "Pulse(amount=0.1, duration=1, loop_limit=4)", replay=True),
+)
+
+EASING_EXAMPLES: tuple[AnimationExample, ...] = (
+    AnimationExample(
+        "easing_back", "OVERSHOOT",
+        "Rise(easing=EaseOutBack())", replay=True),
+    AnimationExample(
+        "easing_bezier", "CUSTOM CURVE",
+        "Rise(easing=CubicBezier(0.4, 0, 0.2, 1))", replay=True),
+    AnimationExample(
+        "easing_steps", "STEPS",
+        "Rise(easing=Steps(10))", replay=True),
+)
+
+COMBO_EXAMPLES: tuple[AnimationExample, ...] = (
+    AnimationExample(
+        "seq_pop_show", "POP SHOW",
+        "Sequence(Pop(), Show(3), loop_limit=None)"),
+    AnimationExample(
+        "seq_hide_pulse_show", "HIDE, PULSE, SHOW",
+        "Sequence(Hide(0.5), Rise(), Pulse(loop_limit=1), Show(2), loop_limit=None)")
+)
+
+ANIMATION_EXAMPLES: tuple[AnimationExample, ...] = (
+    BASE_EXAMPLES + CUSTOM_EXAMPLES + EASING_EXAMPLES + COMBO_EXAMPLES
+)
 
 
 def validate_categories() -> None:
@@ -189,9 +257,8 @@ def intro() -> Block:
               "file. Use them in READMEs, web pages, documentation, or anywhere an image fits.")
         .divider()
         .text("With a few lines of Python you get a block with a gradient border, a glowing "
-              "background and an entrance animation. You pick a **theme** and an "
-              "**animation**, and svgblock takes care of colors, spacing, line breaks and "
-              "the height of the block.")
+              "background and an animation. You pick a **theme** and an **animation**, and "
+              "svgblock takes care of colors, spacing, line breaks and the height of the block.")
         .text("It is plain Python with no external dependencies, and **50 ready-made themes** "
               "are included. You can also edit them or create your own without touching the "
               "library's code.")
@@ -228,8 +295,9 @@ def how_it_is_built() -> Block:
                 ["Image", "A picture embedded in the SVG, scaled to fit the available width."],
                 ["Columns", "Stacks of components side by side, sized by weight."],
                 ["Divider", "A thin line that separates parts of the block. It spans the full width by default."],
-                ["Entrance animation",
-                    "The whole block appears when the image loads, and can replay on a timer."],
+                ["Animation",
+                    "An optional motion of the whole block. It can enter, pulse, wait and repeat, "
+                    "alone or in a sequence."],
             ],
             weights=(1, 3),
         )
@@ -286,7 +354,7 @@ def use_step_3() -> Block:
         doc_block()
         .title("Step 3: Run the script")
         .text("When it finishes, the file **assets/block.svg** is ready. Open it in your "
-              "browser to see the result and the entrance animation. Reload the page to watch "
+              "browser to see the result and the animation. Reload the page to watch "
               "the animation again.")
     )
 
@@ -343,20 +411,24 @@ def building_create() -> Block:
         .table(
             ["Parameter", "Default", "What it does"],
             [
-                ["theme", "Theme.RED",
+                ["theme", "Theme.NEON",
                  "A member of the Theme enum, or your own ThemeData. It defines every color. "
                  "See Themes."],
                 ["width", 800, "The width of the block, in pixels. The height is calculated for you."],
+                ["padding", 24,
+                 "The space between the border and the content, in pixels. It is 0 when "
+                 "hide_frame is True."],
                 ["animation", "None",
-                    "The entrance animation. Without it the block is static. See Animations."],
-                ["animation_loop", "None",
-                 "Seconds between replays of the animation. Without it the animation plays once."],
-                ["frame", "True", "Draws the border and the background. With False, only the content is drawn."],
+                 "How the block moves: an animation such as Rise() or a Sequence(...). "
+                 "Without it the block is static. See Animations."],
+                ["hide_frame", "False",
+                 "Hides the border and the background. With True, only the content is drawn."],
             ],
             align=("left", "center", "left"),
             weights=(2, 2, 5),
         )
-        .text("Every parameter is optional: Block() alone gives you a static block.")
+        .text("Every parameter is optional: Block() alone gives you a static block. Pass "
+              "them by name, as in Block(width=900, animation=Rise()).")
     )
 
 
@@ -540,53 +612,325 @@ def saving() -> Block:
     )
 
 
+# ---------------------------------------------------------------------------
+# README: animations
+# ---------------------------------------------------------------------------
+
+
 @pipeline.asset("animations.svg")
-def animations() -> Block:
+def animations_overview() -> Block:
     return (
         doc_block()
         .title("Animations")
-        .text("Choose an entrance animation with the **animation** parameter. It plays once, "
-              "in 0.8 seconds, when the block appears. Without the parameter the block is static.")
+        .text("An animation moves the whole block when the image is displayed. You create it "
+              "from one of the animation classes and hand it to the block with the "
+              "**animation** parameter. Without the parameter, the block is static.")
         .table(
-            ["Name", "What it does"],
-            [*[[name, description]
-                for name, description in ANIMATION_INFO.items()]],
+            ["Animation", "Kind", "What it does"],
+            [
+                ["Fade()", "entrance", "The block fades in."],
+                ["Rise()", "entrance",
+                 "The block rises from below while fading in."],
+                ["Drop()", "entrance",
+                 "The block drops from above while fading in."],
+                ["Pop()", "entrance",
+                 "The block grows from a smaller size while fading in."],
+                ["Pulse()", "ambient",
+                 "The block grows and shrinks gently, staying in place."],
+                ["Show(duration)", "utility",
+                 "The block stays visible and still for a while. Used inside a sequence."],
+                ["Hide(duration)", "utility",
+                 "The block stays hidden for a while. Used inside a sequence."],
+                ["Sequence(...)", "utility",
+                 "Plays several animations one after another."],
+            ],
+            weights=(4, 2, 6),
+        )
+        .subsection("Three ways to choose an animation")
+        .table(
+            ["Form", "Example", "Use it to"],
+            [
+                ["Default values", "animation=Rise()",
+                 "Get an animation exactly as it comes."],
+                ["A configured animation", "animation=Rise(distance=80)",
+                 "Adjust durations, distances, sizes, curves and repetitions."],
+                ["A sequence", "animation=Sequence(...)",
+                 "Chain animations, add waiting times and repeat the whole thing."],
+            ],
+            weights=(2, 5, 4),
+        )
+        .divider()
+        .text("People who turned on reduce motion in their system settings see the "
+              "block without any animation.")
+    )
+
+
+@pipeline.asset("animations_base.svg")
+def animations_base() -> Block:
+    return (
+        doc_block()
+        .title("Base Animations")
+        .text("These are the animations with their default values. The previews below replay "
+              "by themselves, so you do not need to reload the page.")
+        .subsection("Entrances")
+        .text("**Fade**, **Rise**, **Drop** and **Pop** start hidden or away from their place "
+              "and end in place. They play once, when the image loads.")
+        .subsection("Ambient")
+        .text("**Pulse** keeps the block visible and in place, with a gentle movement. It plays "
+              "once by default: use **loop_limit** to repeat it, or to make it infinite.")
+    )
+
+
+@pipeline.asset("animations_parameters.svg")
+def animations_parameters() -> Block:
+    return (
+        doc_block()
+        .title("Parameters")
+        .text("Every parameter is optional and passed by name, as in "
+              "**Rise(distance=60)**. The only values passed by position are the duration "
+              "of **Show** and **Hide**, which is required, and the animations of a "
+              "**Sequence**.")
+        .subsection("Defaults")
+        .table(
+            ["Animation", "Parameters and default values"],
+            [
+                ["Fade", "duration=0.8, easing=EaseOut()"],
+                ["Rise", "distance=40, fade=True, duration=0.8, easing=EaseOutQuint()"],
+                ["Drop", "distance=40, fade=True, duration=0.8, easing=EaseOutQuint()"],
+                ["Pop", "start_scale=0.8, fade=True, duration=0.6, easing=EaseOutBack()"],
+                ["Pulse", "amount=0.06, duration=2, easing=EaseInOut(), loop_limit=0"],
+                ["Show", "duration (required)"],
+                ["Hide", "duration (required)"],
+                ["Sequence", "the animations, in order, and loop_limit=0"],
+            ],
             weights=(1, 4),
         )
-        .text("Pass the name as a string or use the Animation enum, which gives you "
-              "autocomplete in your editor.")
-        .divider()
-        .subsection("Repeating the animation")
-        .text("Pass **animation_loop** with a number of seconds to replay the entrance over and "
-              "over. It works without JavaScript, so it also runs inside an image shown in a "
-              "README.")
-        .text("The number is the length of the **whole cycle**. With animation_loop=5, the "
-              "entrance takes 0.8 seconds and the block stays visible for the other 4.2, then "
-              "enters again.")
-        .text("• The value must be **greater than 0.8**, the duration of the entrance.")
-        .text("• animation_loop is used together with an animation.")
-        .text("• For blocks with a lot of text, 5 seconds or more leaves time to read.")
-        .divider()
-        .text("People who turned on reduce motion in their system settings see the block with "
-              f"no animation. The previews below repeat every {ANIMATION_LOOP_SECONDS:g} "
-              "seconds, so you do not need to reload the page.")
+        .subsection("What each parameter does")
+        .table(
+            ["Parameter", "Accepts", "What it does"],
+            [
+                ["duration", "A number greater than 0",
+                 "How many seconds one run takes. In **Show** and **Hide**, how long "
+                 "they last."],
+                ["easing", "An easing, such as EaseOut()",
+                 "How the speed changes during the run. See Easings."],
+                ["distance", "A number, 0 or more",
+                 "How many pixels the block travels in **Rise** and **Drop**. With 0 the "
+                 "block does not move."],
+                ["fade", "True or False",
+                 "Whether **Rise**, **Drop** and **Pop** also fade in. With False the block "
+                 "is fully visible while it moves."],
+                ["start_scale", "A number greater than 0",
+                 "The starting size in **Pop**, where 1 is the normal size: 0.8 starts at 80%."],
+                ["amount", "A number greater than 0",
+                 "How much **Pulse** grows at its peak: 0.06 means 6% bigger."],
+                ["loop_limit", "A whole number from 0 to 1000, or None",
+                 "How many times the animation runs again after its first run, in **Pulse** "
+                 "and **Sequence**. None means no limit. See Repeating."],
+            ],
+            weights=(2, 3, 6),
+        )
+        .text("Customized animations are shown below. Each box shows the code that produced it.")
     )
 
 
-def animation_showcase(animation: Animation) -> Block:
-    name = animation_name(animation)
+@pipeline.asset("animations_easings.svg")
+def animations_easings() -> Block:
     return (
-        Block(DOC_THEME, ANIMATION_WIDTH, animation,
-              animation_loop=ANIMATION_LOOP_SECONDS)
-        .title(name.upper())
-        .text(f'Use it with **__animation="{name}"__**.')
-        .text(ANIMATION_INFO.get(name, "An entrance animation."))
+        doc_block()
+        .title("Easings")
+        .text("An easing sets how the speed changes while an animation runs: it can start "
+              "slow, end slow, go past the final position and come back, or move in jumps. "
+              "Pass one to the **easing** parameter of any animation, as in "
+              "**Rise(easing=EaseInOut())**.")
+        .table(
+            ["Easing", "What it does"],
+            [
+                ["Linear()", "Constant speed from start to end."],
+                ["EaseIn()", "Starts slow and speeds up."],
+                ["EaseOut()",
+                 "Starts fast and slows down until it stops. The default of **Fade**."],
+                ["EaseInOut()",
+                 "Slow at the start and at the end, fast in the middle. The default of "
+                 "**Pulse**."],
+                ["EaseOutQuint()",
+                 "Starts very fast and settles slowly, like a soft landing. The default of "
+                 "**Rise** and **Drop**."],
+                ["EaseOutBack()",
+                 "Goes a little past the final value and then comes back. The default of "
+                 "**Pop**."],
+                ["CubicBezier(x1, y1, x2, y2)",
+                 "A curve of your own. See below."],
+                ["Steps(count)",
+                 "Jumps between that many equal steps instead of moving smoothly."],
+            ],
+            weights=(4, 7),
+        )
+        .subsection("Custom curves")
+        .text("Picture a graph where the horizontal axis is time (0 is the start, 1 is the "
+              "end) and the vertical axis is progress (0 is where the animation starts, 1 is "
+              "where it ends). The curve goes from the bottom left to the top right and is "
+              "bent by two control points: **(x1, y1)** pulls the beginning of the curve and "
+              "**(x2, y2)** pulls its end.")
+        .text("• **x1** and **x2** must be between 0 and 1.")
+        .text("• **y1** and **y2** can be any number. A value below 0 or above 1 makes the "
+              "animation go past its limits and come back.")
+        .text("• **CubicBezier(0, 0, 1, 1)** is a straight line, the same as Linear().")
+        .subsection("Good to know")
+        .text("• An easing is an object, never a text: write easing=EaseOut(), not "
+              "easing=\"ease-out\".")
+        .text("• In a sequence, each step keeps its own easing. **Show** and **Hide** have "
+              "no easing.")
+        .divider()
+        .text("Examples are shown below. Each box shows the code that produced it.")
     )
 
 
-for _animation in Animation:
-    pipeline.add(f"animation_{animation_name(_animation)}.svg",
-                 partial(animation_showcase, _animation))
+@pipeline.asset("animations_repeating.svg")
+def animations_repeating() -> Block:
+    return (
+        doc_block()
+        .title("Repeating")
+        .text("Animations that can repeat take **loop_limit**: the number of times they run "
+              "again after the first run. The default is 0, which means they run once.")
+        .table(
+            ["loop_limit", "Total runs"],
+            [
+                ["0 (default)", "1"],
+                ["1", "2"],
+                ["4", "5"],
+                ["None", "No limit: it never stops"],
+            ],
+            weights=(1, 3),
+        )
+        .text("None means there is no limit, so the animation is **infinite**. Infinite "
+              "animations have rules inside sequences: see Sequences.")
+        .text("The largest finite value is 1000. For more than that, use None.")
+        .subsection("Which animations repeat")
+        .text("• **Pulse** and **Sequence** accept loop_limit.")
+        .text("• **Fade**, **Rise**, **Drop** and **Pop** play once and do not accept it. To "
+              "replay an entrance, put it in a **Sequence** with a **Show** step and make "
+              "the sequence infinite.")
+    )
+
+
+@pipeline.asset("animations_sequence.svg")
+def animations_sequence() -> Block:
+    return (
+        doc_block()
+        .title("Sequences")
+        .text("**Sequence(...)** plays animations one after another: each one starts when "
+              "the previous one ends. Pass the animations in order and, if you want, "
+              "**loop_limit** to repeat the whole sequence. A step can be any animation, "
+              "including another sequence.")
+        .subsection("Waiting")
+        .text("**Show(duration)** keeps the block still for a while, looking exactly as it "
+              "normally does. **Hide(duration)** hides the block for a while. Use them to "
+              "delay or to separate steps.")
+        .subsection("Two levels of repetition")
+        .table(
+            ["Where loop_limit is", "What it repeats"],
+            [
+                ["On an animation inside the sequence",
+                 "Only that animation, every time the sequence runs."],
+                ["On the sequence", "The whole sequence, from its first step."],
+            ],
+            weights=(3, 4),
+        )
+        .text("For example, a sequence with loop_limit=2 runs three times, and a Pulse with "
+              "loop_limit=4 inside it pulses five times in each run.")
+        .subsection("Steps are not blended")
+        .text("Each step starts from its own starting state, and svgblock does not smooth the "
+              "connection between steps. After a Rise the block is in place, so a second "
+              "entrance right after it makes the block jump back to its starting state and "
+              "enter again. You choose steps that fit together, and **Show** is the natural "
+              "way to separate them.")
+        .subsection("Infinite steps")
+        .text("• An animation with loop_limit=None never ends, so only the **last** step of a "
+              "sequence can be infinite: anything after it would never play.")
+        .text("• When the last step is infinite, the sequence never reaches its end, so its "
+              "own loop_limit has no effect.")
+        .subsection("Nesting, empty and large sequences")
+        .text("• A sequence can be a step of another sequence. Each one keeps its own "
+              "loop_limit.")
+        .text("• A sequence with no steps is valid and does nothing: the block is shown "
+              "static.")
+        .text("• The repetitions are counted one by one, and a sequence cannot have more than "
+              "10,000 of them in total. To repeat without a limit, use loop_limit=None "
+              "instead of a very large number.")
+        .subsection("When it ends")
+        .text("After its last step, a finite sequence leaves the block in the final state of "
+              "that step. If the last step is **Hide**, the block stays hidden.")
+        .divider()
+        .text("Combined animations are shown below. Each box shows the code that produced it.")
+    )
+
+
+@pipeline.asset("animations_errors.svg")
+def animations_errors() -> Block:
+    return (
+        doc_block()
+        .title("Errors")
+        .table(
+            ["Situation", "What happens"],
+            [
+                ["duration is 0 or negative", "ValueError."],
+                ["distance is negative", "ValueError."],
+                ["start_scale or amount is 0 or negative", "ValueError."],
+                ["loop_limit is negative or greater than 1000", "ValueError."],
+                ["x1 or x2 of CubicBezier is outside 0 to 1", "ValueError."],
+                ["count of Steps is not a whole number of 1 or more", "ValueError."],
+                ["loop_limit passed to Fade, Rise, Drop or Pop",
+                 "TypeError: these animations do not accept it."],
+                ['An easing that is not an easing object, such as easing="ease-out" '
+                 "or easing=EaseOut",
+                 "TypeError."],
+                ["A sequence step that is not an animation, such as Rise without "
+                 "parentheses",
+                 "TypeError."],
+                ["An infinite animation that is not the last step of a sequence",
+                 "ValueError: the steps after it would never play."],
+                ["A sequence that, once unrolled, has more than 10,000 steps",
+                 "ValueError: reduce a loop_limit or use None."],
+            ],
+            weights=(5, 5),
+        )
+        .subsection("Good to know")
+        .text("• The animation moves the whole block, border and content together. With "
+              "hide_frame=True, only the content moves.")
+        .text("• The block is only visible inside the image. With fade=False and a large "
+              "distance, the block starts outside the image and slides in from its edge.")
+        .text("• Animations that make the block grow, such as Pulse, get room inside the "
+              "image: the block rests slightly smaller than width, so it is never cropped. "
+              "In a sequence, the room fits the step that grows the most. The image keeps "
+              "the width you passed.")
+        .text("• Without a loop, an animation plays once when the image loads. Reload the "
+              "page to see it again.")
+        .text("• Some image viewers and editors do not run animations. Open the file in a "
+              "browser to check.")
+    )
+
+
+def build_animation(example: AnimationExample) -> BaseAnimation:
+    animation = eval(
+        example.code, {"__builtins__": {}, **ANIMATION_NAMES})
+    if example.replay:
+        return Sequence(
+            animation, Show(PREVIEW_REST_SECONDS), loop_limit=None)
+    return animation
+
+
+def animation_showcase(example: AnimationExample) -> Block:
+    return (
+        Block(DOC_THEME, ANIMATION_WIDTH, animation=build_animation(example))
+        .title(example.title)
+        .text(f"**__{example.code}__**", font_size=14)
+    )
+
+
+for _example in ANIMATION_EXAMPLES:
+    pipeline.add(f"animation_{_example.slug}.svg",
+                 partial(animation_showcase, _example))
 
 
 # ---------------------------------------------------------------------------
@@ -609,16 +953,20 @@ def customization() -> Block:
                  "Theme.NAME.value.update(...). See Editing a Theme"],
                 ["A new theme", "Create a ThemeData with every color",
                  "theme=your_theme in Block(...). See Creating Your Own Theme"],
-                ["Entrance animation", "Pick one of the six options",
-                 "animation= in Block(...)"],
-                ["Animation replay", "Set the seconds between replays",
-                 "animation_loop= in Block(...)"],
+                ["Animation", "Pick one, configure it or chain several",
+                 "animation= in Block(...). See Animations"],
+                ["How an animation accelerates", "Pick an easing curve",
+                 "easing= in the animations. See Easings"],
                 ["Width of the block", "Set a number of pixels",
                  "width= in Block(...)"],
+                ["Space around the content", "Set a number of pixels",
+                 "padding= in Block(...)"],
+                ["Border and background", "Hide them",
+                 "hide_frame=True in Block(...)"],
                 ["Size of the text", "Set a number of pixels",
                  "font_size= in .title(), .subsection() and .text()"],
                 ["Look of a table", "Pass options to the table", "See Tables"],
-                ["Spacing, sizes, durations", "Edit the constants",
+                ["Spacing and sizes", "Edit the constants",
                     "See Constants Reference"],
             ],
             weights=(3, 3, 5),
@@ -682,10 +1030,6 @@ def constants() -> Block:
         .table(
             ["File", "Constants", "What it controls"],
             [
-                ["block.py (defaults)", "DEFAULT_THEME, DEFAULT_WIDTH, DEFAULT_ANIMATION",
-                 "The values used when you do not pass a parameter."],
-                ["block.py (layout, font)", "BLOCK_PADDING, FONT_FAMILY",
-                 "The space between the border and the content, and the font stack written in the SVG."],
                 ["composer.py", "TITLE_FONT_SIZE, SUBSECTION_FONT_SIZE, TEXT_FONT_SIZE, COMPONENT_GAP, "
                                 "COLUMN_GAP, DEFAULT_COLUMN_WEIGHT",
                  "Default font sizes, the space between components, the space between columns and the default column weight."],
@@ -701,16 +1045,15 @@ def constants() -> Block:
                  "The thickness of dividers and their default coverage."],
                 ["frame.py", "BORDER_WIDTH, CORNER_RADIUS, BACKGROUND_GLOW_RADIUS",
                  "The border thickness, the rounded corners and how far the background glow spreads."],
-                ["animation.py", "ANIMATION_DURATION_SECONDS, SLIDE_DISTANCE_PX, POP_START_SCALE",
-                 "How long the entrance takes, how far the slides travel and how small the pop starts."],
             ],
             weights=(3, 5, 5),
         )
-        .text("Two good starting points: **ANIMATION_DURATION_SECONDS** (a slower or faster "
-              "entrance) and **BACKGROUND_GLOW_RADIUS** (a more concentrated or more spread glow).")
-        .text("Line breaks are calculated with the widths of the Arial font, so keep "
-              "**FONT_FAMILY** starting with Arial for accurate wrapping. If something looks "
-              "off, restore the original values.")
+        .text("Two good starting points: **COMPONENT_GAP** (a tighter or looser block) and "
+              "**BACKGROUND_GLOW_RADIUS** (a more concentrated or more spread glow). The space "
+              "around the content and the look of animations are not constants: they are the "
+              "**padding** parameter of Block and the parameters of Animation.")
+        .text("Line breaks are calculated with the widths of the Arial font. If something "
+              "looks off after a change, restore the original values.")
     )
 
 
@@ -754,7 +1097,7 @@ def theme_showcase(theme: Theme) -> Block:
     key = theme.name.lower()
     name = DISPLAY_NAMES.get(key, key.title())
     return (
-        Block(theme, THEME_WIDTH, Animation.SLIDE_DOWN)
+        Block(theme, THEME_WIDTH, animation=Drop())
         .title(f"{name.upper()} THEME")
         .text(f"Use it with theme=Theme.{theme.name}.")
         .subsection("Subsection: text and marker")
@@ -796,26 +1139,11 @@ def troubleshooting() -> Block:
         .table(
             ["Problem", "What to check"],
             [
-                ["AttributeError: Theme has no attribute ...",
-                 "The theme does not exist in the Theme enum. Names are uppercase, exactly as "
-                 "shown in the Themes section (for example Theme.NEON). To use a color scheme "
-                 "that is not there, create your own ThemeData."],
-                ["An error that names a color, such as KeyError: 'divider'",
-                 "Your ThemeData is missing that color. Every theme needs all of them. See the "
-                 "list in Creating Your Own Theme, or start from a copy of a ready-made theme."],
-                ["A theme changed in blocks where I did not expect it",
-                 "Theme.NAME.value.update(...) changes the shared theme for the whole program. "
-                 "To change only one block, use Theme.NAME.value.copy(), edit the copy and pass "
-                 "it to that block."],
-                ["My theme edit has no effect",
-                 "Make the change before the blocks that use it are drawn, and check that the "
-                 "color name is spelled exactly as in the list of theme colors."],
-                ["ValueError: Unknown animation",
-                 "The valid names are fade, slide-up, slide-down, slide-left, slide-right and "
-                 "pop. For a static block, omit the parameter or pass None."],
-                ["ValueError about animation_loop",
-                 "animation_loop must be greater than 0.8 seconds, the duration of the entrance, "
-                 "and it needs an animation. Pass animation=... together with it."],
+                ["Errors about the | symbol in type hints",
+                 "You are using a Python older than 3.10. Update Python and install again."],
+                ["NameError: name 'Rise' is not defined",
+                 "Animations and easings must be imported, as in from svgblock import Rise, "
+                 "Sequence, EaseOut."],
                 ["ValueError: Unclosed marker",
                  r"A marker (\*\*, \_\_, \-\-, \#\#) was opened and never closed. Every marker "
                  r"needs a closing twin. To write a literal one, put a backslash before each of its characters."],
@@ -828,8 +1156,6 @@ def troubleshooting() -> Block:
                 ["SyntaxWarning: invalid escape sequence",
                  "Python is warning about the backslash. Use a raw string (an r before the opening "
                  "quote) or write the backslash twice."],
-                ["Errors about the | symbol in type hints",
-                 "You are using a Python older than 3.10. Update Python and install again."],
                 ["ValueError from table, columns, divider or image",
                  "Every table row needs as many cells as columns, align and weights need one value "
                  "per column, a divider coverage must be between 0 and 1 and an image width must be "
@@ -847,15 +1173,69 @@ def troubleshooting() -> Block:
                  "The width of the text is estimated with the Arial font. On a system without Arial "
                  "the browser uses another font, so lines can look slightly different. Emojis and "
                  "curly quotes are measured as a full letter wide."],
+                ["ValueError about duration, distance, start_scale or amount",
+                 "Durations, sizes and amounts must be greater than 0, and distance must be "
+                 "0 or more."],
+                ["ValueError about loop_limit",
+                 "loop_limit must be from 0 to 1000, or None for no limit. In a sequence, "
+                 "only the last step can be infinite."],
+                ["ValueError about x1, x2 or count",
+                 "In CubicBezier, x1 and x2 must be between 0 and 1. In Steps, count must be "
+                 "a whole number of 1 or more."],
+                ["TypeError: unexpected keyword argument 'loop_limit'",
+                 "Only Pulse and Sequence accept loop_limit. Fade, Rise, Drop and Pop play "
+                 "once. To repeat them, put them in a Sequence."],
+                ["TypeError: a step must be an animation, or easing must be an Easing",
+                 "Animations and easings are objects, so they need parentheses: Rise(), not "
+                 "Rise, and EaseOut(), not EaseOut. Names in quotes, such as \"rise\" or "
+                 "\"ease-out\", are not accepted."],
+                ["ValueError: Step N of the sequence would never play",
+                 "An earlier step has loop_limit=None and never ends, so nothing after it can "
+                 "play. Move the infinite step to the end of the sequence."],
+                ["The loop_limit of my sequence does nothing",
+                 "When the last step is infinite, the sequence never reaches its end, so it "
+                 "cannot repeat. Use a finite last step."],
+                ["ValueError: This sequence repeats too much",
+                 "The repetitions of a sequence are counted one by one and cannot pass 10,000. "
+                 "Reduce a loop_limit or use None."],
+                ["The animation does not play",
+                 "An animation without a loop plays once, when the image loads, so reload the "
+                 "page to see it again. To replay an entrance, use a Sequence with a Show step "
+                 "and loop_limit=None. Nothing plays for people who turned on reduce motion, "
+                 "or in viewers that do not run animations. Open the file in a browser to "
+                 "check."],
+                ["My pulse only pulses once",
+                 "loop_limit is 0 by default, which means a single run. Use loop_limit=4 for "
+                 "five pulses or loop_limit=None for no limit."],
+                ["The block jumps between two steps of a sequence",
+                 "svgblock does not blend steps: each one starts from its own state. After an "
+                 "entrance the block is in place, and a new entrance starts from its beginning. "
+                 "Choose steps that fit together, or separate them with a Show step."],
+                ["The block is cropped while it moves",
+                 "The block is only visible inside the image. With fade=False, a large "
+                 "distance makes the block start outside the image. Reduce the distance or "
+                 "keep the fade on."],
+                ["The block looks smaller than width with Pulse",
+                 "Animations that grow the block get room inside the image, so the block "
+                 "rests slightly smaller than width and is never cropped."],
+                ["AttributeError: Theme has no attribute ...",
+                 "The theme does not exist in the Theme enum. Names are uppercase, exactly as "
+                 "shown in the Themes section (for example Theme.NEON). To use a color scheme "
+                 "that is not there, create your own ThemeData."],
+                ["An error that names a color, such as KeyError: 'divider'",
+                 "Your ThemeData is missing that color. Every theme needs all of them. See the "
+                 "list in Creating Your Own Theme, or start from a copy of a ready-made theme."],
+                ["A theme changed in blocks where I did not expect it",
+                 "Theme.NAME.value.update(...) changes the shared theme for the whole program. "
+                 "To change only one block, use Theme.NAME.value.copy(), edit the copy and pass "
+                 "it to that block."],
+                ["My theme edit has no effect",
+                 "Make the change before the blocks that use it are drawn, and check that the "
+                 "color name is spelled exactly as in the list of theme colors."],
                 ["The block does not show on my page",
                  "Check that the path in the img tag matches the file name exactly (paths are case "
                  "sensitive on most servers, including GitHub) and that the .svg file is "
                  "published together with the page."],
-                ["The animation does not play",
-                 "Without animation_loop the animation plays once, when the image loads, so reload "
-                 "the page to see it again. It is disabled for people who turned on reduce motion, "
-                 "and some image viewers and editors do not run animations. Open the file in a "
-                 "browser to check."],
             ],
             weights=(2, 5),
         )

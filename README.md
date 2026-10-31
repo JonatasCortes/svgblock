@@ -7,7 +7,8 @@
   <img src="https://img.shields.io/badge/python-3.10+-3776AB?logo=python&logoColor=white" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/dependencies-none-2ea44f" alt="No dependencies">
   <img src="https://img.shields.io/badge/themes-50-ff0055" alt="50 themes">
-  <img src="https://img.shields.io/badge/entry_animations-6-8A2BE2" alt="6 entry animations">
+  <img src="https://img.shields.io/badge/animations-5-8A2BE2" alt="5 animations">
+  <img src="https://img.shields.io/badge/easings-8-00B8D9" alt="8 easings">
   <img src="https://img.shields.io/badge/output-SVG-FFB13B?logo=svg&logoColor=white" alt="SVG output">
 </p>
 
@@ -33,7 +34,16 @@
       <li><a href="#tables">Tables</a></li>
       <li><a href="#images">Images</a></li>
       <li><a href="#saving-the-result">Saving the result</a></li>
-      <li><a href="#animations">Animations</a></li>
+    </ul>
+  </li>
+  <li><a href="#animations">🎞️ Animations</a>
+    <ul>
+      <li><a href="#base-animations">Base animations</a></li>
+      <li><a href="#animation-parameters">Parameters</a></li>
+      <li><a href="#easings">Easings</a></li>
+      <li><a href="#repeating">Repeating</a></li>
+      <li><a href="#sequences">Sequences</a></li>
+      <li><a href="#animation-errors">Errors</a></li>
     </ul>
   </li>
   <li><a href="#customization">🛠️ Customization</a>
@@ -85,10 +95,10 @@ pip install svgblock
 </p>
 
 ```python
-from svgblock import Block, Theme
+rom svgblock import Block, Rise, Theme
 
 (
-    Block(theme=Theme.NEON, width=900, animation="slide-up")
+    Block(theme=Theme.NEON, width=900, animation=Rise())
     .title("Hello, I'm Bob")
     .text("I build **small tools** in **pure Python** and I love open source.")
     .subsection("What I am learning")
@@ -122,10 +132,10 @@ python generate_blocks.py
 </p>
 
 ```python
-from svgblock import Block, Theme
+from svgblock import Block, Fade, Pop, Theme
 
-Block(theme=Theme.DRACULA, animation="fade").title("About me").text("...").save("assets/about.svg")
-Block(theme=Theme.NORD, animation="pop").title("Projects").text("...").save("assets/projects.svg")
+Block(theme=Theme.DRACULA, animation=Fade()).title("About me").text("...").save("assets/about.svg")
+Block(theme=Theme.NORD, animation=Pop()).title("Projects").text("...").save("assets/projects.svg")
 ```
 
 <p align="center">
@@ -148,9 +158,9 @@ pip install -e .
 </p>
 
 ```python
-from svgblock import Block, Theme
+from svgblock import Block, Fade, Theme
 
-Block(theme=Theme.RED, width=900, animation="fade")
+Block(theme=Theme.RED, width=900, padding=32, animation=Fade())
 ```
 
 <a id="adding-content"></a>
@@ -248,30 +258,134 @@ from svgblock import Block, Column, Theme
   <img src="assets/saving.svg" alt="Saving the result" width="900">
 </p>
 
+<p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
+
 <a id="animations"></a>
 
 <p align="center">
   <img src="assets/animations.svg" alt="Animations" width="900">
 </p>
 
+```python
+from svgblock import Block, Pop, Rise, Sequence, Show
+
+# Default values
+Block(animation=Rise())
+
+# A configured animation
+Block(animation=Rise(distance=80, duration=1.2))
+
+# A sequence: enter, rest for 3 seconds and enter again, forever
+Block(animation=Sequence(Pop(), Show(3), loop_limit=None))
+```
+
+<a id="base-animations"></a>
+
+<p align="center">
+  <img src="assets/animations_base.svg" alt="Base animations" width="900">
+</p>
+
 <p align="center">
   <img src="assets/animation_fade.svg" alt="fade animation" width="49%">
+  <img src="assets/animation_rise.svg" alt="rise animation" width="49%">
+  <img src="assets/animation_drop.svg" alt="drop animation" width="49%">
   <img src="assets/animation_pop.svg" alt="pop animation" width="49%">
-  <img src="assets/animation_slide-up.svg" alt="slide-up animation" width="49%">
-  <img src="assets/animation_slide-down.svg" alt="slide-down animation" width="49%">
-  <img src="assets/animation_slide-left.svg" alt="slide-left animation" width="49%">
-  <img src="assets/animation_slide-right.svg" alt="slide-right animation" width="49%">
+  <img src="assets/animation_pulse.svg" alt="pulse animation" width="49%">
+</p>
+
+<a id="animation-parameters"></a>
+
+<p align="center">
+  <img src="assets/animations_parameters.svg" alt="Animation parameters" width="900">
 </p>
 
 ```python
-from svgblock import Animation, Block
+from svgblock import Drop, Fade, Linear, Pop, Pulse, Rise
 
-# Plays once
-Block(animation="pop")
-Block(animation=Animation.SLIDE_UP)
+Rise(distance=80, duration=1.6, fade=False)
+Drop(distance=20, duration=0.4)
+Pop(start_scale=0.3, duration=1.2)
+Pulse(amount=0.1, duration=1, loop_limit=4)
+Fade(duration=2, easing=Linear())
+```
 
-# Replays every 5 seconds
-Block(animation="slide-up", animation_loop=5)
+<p align="center">
+  <img src="assets/animation_rise_custom.svg" alt="customized rise animation" width="49%">
+  <img src="assets/animation_drop_custom.svg" alt="customized drop animation" width="49%">
+  <img src="assets/animation_pop_custom.svg" alt="customized pop animation" width="49%">
+  <img src="assets/animation_pulse_custom.svg" alt="customized pulse animation" width="49%">
+</p>
+
+<a id="easings"></a>
+
+<p align="center">
+  <img src="assets/animations_easings.svg" alt="Easings" width="900">
+</p>
+
+```python
+from svgblock import CubicBezier, EaseInOut, Rise, Steps
+
+Rise(easing=EaseInOut())
+Rise(easing=CubicBezier(0.4, 0, 0.2, 1))
+Rise(easing=Steps(10))
+```
+
+<p align="center">
+  <img src="assets/animation_easing_back.svg" alt="overshoot easing" width="49%">
+  <img src="assets/animation_easing_bezier.svg" alt="custom curve easing" width="49%">
+  <img src="assets/animation_easing_steps.svg" alt="steps easing" width="49%">
+</p>
+
+<a id="repeating"></a>
+
+<p align="center">
+  <img src="assets/animations_repeating.svg" alt="Repeating animations" width="900">
+</p>
+
+```python
+from svgblock import Pulse
+
+Pulse()                  # runs once
+Pulse(loop_limit=4)      # runs five times
+Pulse(loop_limit=None)   # never stops
+```
+
+<a id="sequences"></a>
+
+<p align="center">
+  <img src="assets/animations_sequence.svg" alt="Sequences" width="900">
+</p>
+
+```python
+from svgblock import Hide, Show, Pop, Pulse, Rise, Sequence
+
+Sequence(Pop(), Show(3), loop_limit=None)
+
+Sequence(Hide(0.5), Rise(), Pulse(loop_limit=1), Show(2), loop_limit=None)
+```
+
+<p align="center">
+  <img src="assets/animation_seq_pop_show.svg" alt="replay sequence" width="49%" valign="top">
+  <img src="assets/animation_seq_hide_pulse_show.svg" alt="enter, then pulse sequence" width="49%" valign="top">
+</p>
+
+<a id="animation-errors"></a>
+
+<p align="center">
+  <img src="assets/animations_errors.svg" alt="Animation errors" width="900">
+</p>
+
+```python
+from svgblock import CubicBezier, Pulse, Rise, Sequence, Show
+
+Rise(distance=-10)                 # ValueError: distance must be 0 or more
+Rise(loop_limit=2)                 # TypeError: unexpected keyword argument 'loop_limit'
+Rise(easing="ease-out")            # TypeError: easing must be an Easing, such as EaseOut() ...
+CubicBezier(1.5, 0, 0.5, 1)        # ValueError: x1 must be between 0 and 1
+Sequence(Rise, Pulse())            # TypeError: A sequence step must be an animation, such as Rise() ...
+
+# ValueError: the Show after an infinite step would never play
+Sequence(Pulse(loop_limit=None), Show(1))
 ```
 
 <p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
