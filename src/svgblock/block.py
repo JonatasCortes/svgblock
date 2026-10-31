@@ -4,6 +4,9 @@ from .composition import Composer
 from .frame import build_frame
 from .themes import Theme, ThemeData
 
+MARGIN_TOLERANCE = 0.5
+MAX_LAYOUT_PASSES = 8
+
 
 class Block(Composer):
 
@@ -24,28 +27,47 @@ class Block(Composer):
         self._animation = animation
         self._hide_frame = hide_frame
 
-    def render(self) -> str:
-        if self._animation is None:
-            growth = 1.0
-            left = top = right = bottom = 0.0
-        else:
-            growth = self._animation.max_scale
-            left, top, right, bottom = self._animation.overflow
-
+    def _layout(self, growth: float, margins: tuple[float, ...]):
+        left, _, right, _ = margins
         available_width = self._width - left - right
         if available_width <= 0:
             raise ValueError(
-                f"Animation moves the block {left + right:g}px sideways, "
+                f"Animation needs {left + right:g}px of side margin, "
                 f"which does not fit in width {self._width:g}."
             )
-
         block_width = available_width / growth
         content_width = block_width - 2 * self._padding
         rendered = self._render_components(
             self._theme, self._padding, self._padding, content_width
         )
         block_height = rendered.height + 2 * self._padding
+        return block_width, block_height, rendered
 
+    def render(self) -> str:
+        if self._animation is None:
+            growth = 1.0
+            margins: tuple[float, ...] = (0.0, 0.0, 0.0, 0.0)
+            block_width, block_height, rendered = self._layout(growth, margins)
+        else:
+            growth = self._animation.max_scale
+            margins: tuple[float, ...] = (0.0, 0.0, 0.0, 0.0)
+            for _ in range(MAX_LAYOUT_PASSES):
+                block_width, block_height, rendered = self._layout(
+                    growth, margins)
+                needed = self._animation.margins(block_width, block_height)
+                merged = tuple(max(a, b) for a, b in zip(margins, needed))
+                stable = all(
+                    abs(new - old) <= MARGIN_TOLERANCE
+                    for new, old in zip(merged, margins)
+                )
+                margins = merged
+                if stable:
+                    break
+            else:
+                block_width, block_height, rendered = self._layout(
+                    growth, margins)
+
+        left, top, _, bottom = margins
         scaled_height = block_height * growth
         height = scaled_height + top + bottom
 

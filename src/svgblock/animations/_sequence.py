@@ -7,6 +7,7 @@ from ._base import (
     Expansion,
     Keyframe,
     Layer,
+    Margins,
     RepeatableAnimation,
     Segment,
     check_loop_limit,
@@ -31,8 +32,8 @@ def _compile(segments: tuple[Segment, ...]) -> tuple[Keyframe, ...]:
             ends_segment = keyframe.at >= 1
             if ends_segment and index < last:
                 at -= _JUMP
-            frames.append(Keyframe(
-                at, keyframe.pose, None if ends_segment else segment.easing))
+            easing = None if ends_segment else keyframe.easing or segment.easing
+            frames.append(Keyframe(at, keyframe.pose, easing))
         start += segment.duration
     return tuple(frames)
 
@@ -99,6 +100,19 @@ class Sequence(RepeatableAnimation):
     @property
     def max_scale(self) -> float:
         return max([1.0, *(step.max_scale for step in self.steps)])
+
+    @property
+    def max_blur(self) -> float:
+        return max([0.0, *(step.max_blur for step in self.steps)])
+
+    def margins(self, width: float, height: float) -> Margins:
+        needs = [step.margins(width, height) for step in self.steps]
+        return (
+            max([0.0, *(need[0] for need in needs)]),
+            max([0.0, *(need[1] for need in needs)]),
+            max([0.0, *(need[2] for need in needs)]),
+            max([0.0, *(need[3] for need in needs)]),
+        )
 
     def keyframes(self) -> list[Keyframe]:
         body = self._body
