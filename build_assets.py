@@ -797,6 +797,9 @@ def animations_base() -> Block:
               "use **loop_limit** to repeat them, or to make them infinite. **Shake** and "
               "**Jelly** lose strength until they stop. **Rotate** and **Drift** use a linear "
               "easing, so the loop has no jolt where it restarts.")
+        .divider()
+        .subsection("Browser Limitations")
+        .text("**Safari** doesn't render blur, so __FocusIn__ and __FocusOut__ may apear identical to __FadeIn__ and __FadeOut__")
     )
 
 
