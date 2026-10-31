@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="109" viewBox="0 0 400 109"><style>
+@keyframes sequence-6d11fbac {
+0% { opacity: 1; transform: translate(0px, 0px) rotate(0deg) scale(1, 1); animation-timing-function: linear; } 56.603674% { opacity: 1; transform: translate(0px, 0px) rotate(0deg) scale(1, 1); } 56.603774% { opacity: 1; transform: translate(0px, 0px) rotate(0deg) scale(1, 1); animation-timing-function: ease-in; } 71.698013% { opacity: 0; transform: translate(0px, 0px) rotate(0deg) scale(1, 1); } 71.698113% { opacity: 0; transform: translate(0px, 0px) rotate(0deg) scale(1, 1); animation-timing-function: linear; } 90.565938% { opacity: 0; transform: translate(0px, 0px) rotate(0deg) scale(1, 1); } 90.566038% { opacity: 0; transform: translate(0px, 0px) rotate(0deg) scale(1, 1); animation-timing-function: ease-out; } 100% { opacity: 1; transform: translate(0px, 0px) rotate(0deg) scale(1, 1); }
+}
+.sequence-6d11fbac {
+  animation: sequence-6d11fbac 5.3s linear 0s infinite both;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sequence-6d11fbac { animation: none; }
+}
+</style><g transform="translate(0 0)"><g class="sequence-6d11fbac"><defs><radialGradient id="background" cx="0.5" cy="0.5" r="0.7"><stop offset="0" stop-color="#121324"/><stop offset="1" stop-color="#080811"/></radialGradient><linearGradient id="border" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF0055"/><stop offset="1" stop-color="#7000FF"/></linearGradient></defs><rect x="1" y="1" width="398" height="107" rx="15" fill="url(#background)" stroke="none" stroke-width="2"/><rect x="1" y="1" width="398" height="107" rx="15" fill="none" stroke="url(#border)" stroke-width="2"/><g font-family="Arial, Helvetica, sans-serif"><rect x="24.0" y="27.0" width="4" height="24.0" rx="2" fill="#FF0055"/><text x="39.0" y="46.0" font-size="20" fill="#FF1F6E" font-weight="700">FADE OUT</text><text x="24.0" y="79.4" font-size="14" fill="#F2F2FF"><tspan fill="#FF6BA8" font-weight="700" text-decoration="underline">FadeOut()</tspan></text></g></g></g></svg>

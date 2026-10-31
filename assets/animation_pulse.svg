@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="115.54" viewBox="0 0 400 115.54"><style>
 @keyframes pulse-9f0f5826 {
-0% { opacity: 1; transform: translate(0px, 0px) scale(1); } 50% { opacity: 1; transform: translate(0px, 0px) scale(1.06); } 100% { opacity: 1; transform: translate(0px, 0px) scale(1); }
+0% { opacity: 1; transform: translate(0px, 0px) rotate(0deg) scale(1, 1); } 50% { opacity: 1; transform: translate(0px, 0px) rotate(0deg) scale(1.06, 1.06); } 100% { opacity: 1; transform: translate(0px, 0px) rotate(0deg) scale(1, 1); }
 }
 .pulse-9f0f5826 {
   animation: pulse-9f0f5826 2s ease-in-out 0s infinite both;

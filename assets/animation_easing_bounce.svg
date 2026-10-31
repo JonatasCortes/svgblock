@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="130" viewBox="0 0 400 130"><style>
+@keyframes sequence-63f54d5d {
+0% { opacity: 1; transform: translate(0px, -120px) rotate(0deg) scale(1, 1); animation-timing-function: linear(0, 0.0008, 0.0033, 0.0074, 0.0131, 0.0205, 0.0295, 0.0402, 0.0525, 0.0665, 0.0821, 0.0993, 0.1182, 0.1387, 0.1608, 0.1846, 0.2101, 0.2371, 0.2659, 0.2962, 0.3282, 0.3619, 0.3972, 0.4341, 0.4727, 0.5129, 0.5547, 0.5982, 0.6433, 0.6901, 0.7385, 0.7886, 0.8403, 0.8936, 0.9486, 0.9974, 0.9697, 0.9437, 0.9193, 0.8965, 0.8754, 0.856, 0.8381, 0.8219, 0.8074, 0.7945, 0.7832, 0.7736, 0.7656, 0.7593, 0.7546, 0.7515, 0.7501, 0.7503, 0.7522, 0.7557, 0.7609, 0.7676, 0.7761, 0.7861, 0.7979, 0.8112, 0.8262, 0.8428, 0.8611, 0.881, 0.9026, 0.9258, 0.9506, 0.9771, 0.9974, 0.9842, 0.9727, 0.9627, 0.9545, 0.9478, 0.9428, 0.9395, 0.9377, 0.9377, 0.9392, 0.9424, 0.9473, 0.9538, 0.9619, 0.9717, 0.9831, 0.9962, 0.9952, 0.9901, 0.9866, 0.9847, 0.9845, 0.9859, 0.989, 0.9937, 1); } 31.818082% { opacity: 1; transform: translate(0px, 0px) rotate(0deg) scale(1, 1); } 31.818182% { opacity: 1; transform: translate(0px, 0px) rotate(0deg) scale(1, 1); animation-timing-function: linear; } 100% { opacity: 1; transform: translate(0px, 0px) rotate(0deg) scale(1, 1); }
+}
+.sequence-63f54d5d {
+  animation: sequence-63f54d5d 4.4s linear 0s infinite both;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sequence-63f54d5d { animation: none; }
+}
+</style><g transform="translate(0 0)"><g class="sequence-63f54d5d"><defs><radialGradient id="background" cx="0.5" cy="0.5" r="0.7"><stop offset="0" stop-color="#121324"/><stop offset="1" stop-color="#080811"/></radialGradient><linearGradient id="border" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF0055"/><stop offset="1" stop-color="#7000FF"/></linearGradient></defs><rect x="1" y="1" width="398" height="128" rx="15" fill="url(#background)" stroke="none" stroke-width="2"/><rect x="1" y="1" width="398" height="128" rx="15" fill="none" stroke="url(#border)" stroke-width="2"/><g font-family="Arial, Helvetica, sans-serif"><rect x="24.0" y="27.0" width="4" height="24.0" rx="2" fill="#FF0055"/><text x="39.0" y="46.0" font-size="20" fill="#FF1F6E" font-weight="700">BOUNCE</text><text x="24.0" y="79.4" font-size="14" fill="#F2F2FF"><tspan fill="#FF6BA8" font-weight="700" text-decoration="underline">DropIn(distance=120, fade=False, easing=Bounce(),</tspan></text><text x="24.0" y="100.4" font-size="14" fill="#F2F2FF"><tspan fill="#FF6BA8" font-weight="700" text-decoration="underline">duration=1.4)</tspan></text></g></g></g></svg>
