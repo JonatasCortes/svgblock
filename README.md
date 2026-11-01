@@ -7,8 +7,8 @@
   <img src="https://img.shields.io/badge/python-3.10+-3776AB?logo=python&logoColor=white" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/dependencies-none-2ea44f" alt="No dependencies">
   <img src="https://img.shields.io/badge/themes-50-ff0055" alt="50 themes">
-<img src="https://img.shields.io/badge/animations-31-8A2BE2" alt="31 animations">
-<img src="https://img.shields.io/badge/easings-26-00B8D9" alt="26 easings">
+  <img src="https://img.shields.io/badge/animations-31-8A2BE2" alt="31 animations">
+  <img src="https://img.shields.io/badge/easings-26-00B8D9" alt="26 easings">
   <img src="https://img.shields.io/badge/output-SVG-FFB13B?logo=svg&logoColor=white" alt="SVG output">
 </p>
 
@@ -28,29 +28,26 @@
   <li><a href="#building-a-block">🧱 Building a Block</a>
     <ul>
       <li><a href="#creating-a-block">Creating a block</a></li>
-      <li><a href="#adding-content">Adding content</a></li>
+      <li><a href="#dividers">Dividers</a></li>
       <li><a href="#text-markers">Text markers</a></li>
       <li><a href="#columns">Columns</a></li>
       <li><a href="#tables">Tables</a></li>
       <li><a href="#images">Images</a></li>
-      <li><a href="#saving-the-result">Saving the result</a></li>
     </ul>
   </li>
   <li><a href="#animations">🎞️ Animations</a>
     <ul>
-      <li><a href="#base-animations">Base animations</a></li>
-      <li><a href="#animation-parameters">Parameters</a></li>
       <li><a href="#easings">Easings</a></li>
       <li><a href="#repeating">Repeating</a></li>
       <li><a href="#sequences">Sequences</a></li>
-      <li><a href="#animation-errors">Errors</a></li>
     </ul>
   </li>
   <li><a href="#customization">🛠️ Customization</a>
     <ul>
-      <li><a href="#creating-your-own-theme">Creating your own theme</a></li>
       <li><a href="#editing-a-theme">Editing a theme</a></li>
-      <li><a href="#constants-reference">Constants reference</a></li>
+      <li><a href="#customizing-spacing">Spacing</a></li>
+      <li><a href="#customizing-an-animation">Animation</a></li>
+      <li><a href="#creating-your-own-theme">Creating your own theme</a></li>
     </ul>
   </li>
   <li><a href="#themes">🎨 Themes</a>
@@ -59,10 +56,10 @@
       <li><a href="#2-light-colors-pastels">2. Light Colors (Pastels)</a></li>
       <li><a href="#3-seasons">3. Seasons</a></li>
       <li><a href="#4-drinks">4. Drinks</a></li>
-      <li><a href="#5-countries--geography">5. Countries & Geography</a></li>
-      <li><a href="#6-aesthetics--culture">6. Aesthetics & Culture</a></li>
+      <li><a href="#5-countries--geography">5. Countries &amp; Geography</a></li>
+      <li><a href="#6-aesthetics--culture">6. Aesthetics &amp; Culture</a></li>
       <li><a href="#7-classical-ui-dev-themes">7. Classical UI (Dev Themes)</a></li>
-      <li><a href="#8-mythology--concepts">8. Mythology & Concepts</a></li>
+      <li><a href="#8-mythology--concepts">8. Mythology &amp; Concepts</a></li>
     </ul>
   </li>
   <li><a href="#troubleshooting">🩺 Troubleshooting</a></li>
@@ -95,10 +92,10 @@ pip install svgblock
 </p>
 
 ```python
-from svgblock import Block, Rise, Theme
+from svgblock import Block, RiseIn, Theme
 
 (
-    Block(theme=Theme.NEON, width=900, animation=Rise())
+    Block(theme=Theme.NEON, width=900, animation=RiseIn())
     .title("Hello, I'm Bob")
     .text("I build **small tools** in **pure Python** and I love open source.")
     .subsection("What I am learning")
@@ -154,7 +151,7 @@ pip install -e .
 <a id="creating-a-block"></a>
 
 <p align="center">
-  <img src="assets/building_create.svg" alt="Creating a block" width="900">
+  <img src="assets/building_create.svg" alt="Building a block" width="900">
 </p>
 
 ```python
@@ -163,26 +160,15 @@ from svgblock import Block, FadeIn, Theme
 Block(theme=Theme.RED, width=900, padding=32, animation=FadeIn())
 ```
 
-<a id="adding-content"></a>
+<a id="dividers"></a>
 
 <p align="center">
-  <img src="assets/building_content.svg" alt="Adding content" width="900">
+  <img src="assets/dividers.svg" alt="Dividers" width="900">
 </p>
 
 ```python
-(
-    Block(theme=Theme.COFFEE)
-    .title("Projects")
-    .text("A few things I built.", font_size=18)
-    .subsection("Log parser")
-    .text("Reads log files and prints a short summary.")
-    .divider()
-    .table(["Project", "Stars"], [["logparse", 120], ["tinyserver", 85]])
-    .image("assets/preview.png", width=300)
-    .divider(0.5)
-    .title("Contact")
-    .text("Find me on GitHub.")
-)
+.divider()      # full width
+.divider(0.6)   # 60% of the width, centered
 ```
 
 <a id="text-markers"></a>
@@ -247,16 +233,10 @@ from svgblock import Block, Column, Theme
     Block(theme=Theme.NEON)
     .columns(
         Column().image("assets/logo.png", width=350),
-        Column().subsection("A logo beside the text").text("The image sits in a column and the text takes the rest of the width"),
+        Column().subsection("A logo beside the text").text("The image sits in a column and the text takes the rest of the width."),
     )
 )
 ```
-
-<a id="saving-the-result"></a>
-
-<p align="center">
-  <img src="assets/saving.svg" alt="Saving the result" width="900">
-</p>
 
 <p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
 
@@ -281,12 +261,6 @@ Block(animation=Sequence(PopIn(), Show(3), loop_limit=None))
 # Enter, rest and leave, forever
 Block(animation=Sequence(RiseIn(), Show(2), RiseOut(), Hide(0.5), loop_limit=None))
 ```
-
-<a id="base-animations"></a>
-
-<p align="center">
-  <img src="assets/animations_base.svg" alt="Base animations" width="900">
-</p>
 
 <p align="center">
   <img src="assets/animation_fade_in.svg" alt="fade in animation" width="49%">
@@ -322,10 +296,134 @@ Block(animation=Sequence(RiseIn(), Show(2), RiseOut(), Hide(0.5), loop_limit=Non
   <img src="assets/animation_jelly.svg" alt="jelly animation" width="49%">
 </p>
 
-<a id="animation-parameters"></a>
+<a id="easings"></a>
 
 <p align="center">
-  <img src="assets/animations_parameters.svg" alt="Animation parameters" width="900">
+  <img src="assets/easings.svg" alt="Easings" width="900">
+</p>
+
+```python
+from svgblock import Bounce, CubicBezier, DropIn, EaseOutBack, RiseIn, Spring, Steps
+
+RiseIn(easing=EaseOutBack())
+RiseIn(easing=CubicBezier(0.4, 0, 0.2, 1))
+RiseIn(easing=Steps(10))
+RiseIn(easing=Spring(), duration=1.4)
+DropIn(distance=120, fade=False, easing=Bounce(), duration=1.4)
+```
+
+<p align="center">
+  <img src="assets/easing_ease_in_without.svg" alt="ease in animation without easing" width="49%">
+  <img src="assets/easing_ease_in_with.svg" alt="ease in animation with easing" width="49%">
+  <img src="assets/easing_ease_out_without.svg" alt="ease out animation without easing" width="49%">
+  <img src="assets/easing_ease_out_with.svg" alt="ease out animation with easing" width="49%">
+  <img src="assets/easing_ease_in_out_without.svg" alt="ease in out animation without easing" width="49%">
+  <img src="assets/easing_ease_in_out_with.svg" alt="ease in out animation with easing" width="49%">
+  <img src="assets/easing_overshoot_without.svg" alt="overshoot animation without easing" width="49%">
+  <img src="assets/easing_overshoot_with.svg" alt="overshoot animation with easing" width="49%">
+  <img src="assets/easing_custom_curve_without.svg" alt="custom curve animation without easing" width="49%">
+  <img src="assets/easing_custom_curve_with.svg" alt="custom curve animation with easing" width="49%">
+  <img src="assets/easing_steps_without.svg" alt="steps animation without easing" width="49%">
+  <img src="assets/easing_steps_with.svg" alt="steps animation with easing" width="49%">
+  <img src="assets/easing_spring_without.svg" alt="spring animation without easing" width="49%">
+  <img src="assets/easing_spring_with.svg" alt="spring animation with easing" width="49%">
+  <img src="assets/easing_bounce_without.svg" alt="bounce animation without easing" width="49%">
+  <img src="assets/easing_bounce_with.svg" alt="bounce animation with easing" width="49%">
+</p>
+
+<a id="repeating"></a>
+
+<p align="center">
+  <img src="assets/repeating.svg" alt="Repeating animations" width="900">
+</p>
+
+```python
+from svgblock import Float, Pulse
+
+Pulse()                  # runs once
+Pulse(loop_limit=4)      # runs five times
+Pulse(loop_limit=None)   # never stops
+Float(loop_limit=None)   # any ambient animation works the same way
+```
+
+<a id="sequences"></a>
+
+<p align="center">
+  <img src="assets/sequences.svg" alt="Sequences" width="900">
+</p>
+
+```python
+from svgblock import (Float, Hide, PopIn, Pulse, RiseIn, RiseOut, Sequence, Show,
+                      ZoomIn, ZoomOut)
+
+Sequence(PopIn(), Show(3), loop_limit=None)
+
+Sequence(Hide(0.5), RiseIn(), Pulse(loop_limit=1), Show(2), loop_limit=None)
+
+# Enter, float for three runs, leave
+Sequence(RiseIn(), Float(loop_limit=2), RiseOut(), loop_limit=None)
+
+Sequence(ZoomIn(), Show(2), ZoomOut(), Hide(0.5), loop_limit=None)
+```
+
+<p align="center">
+  <img src="assets/sequence_appear_stay_leave.svg" alt="appear, stay, leave sequence" width="49%">
+  <img src="assets/sequence_leave_the_way_it_came.svg" alt="leave the way it came sequence" width="49%">
+  <img src="assets/sequence_rise_float_leave.svg" alt="rise, float, leave sequence" width="49%">
+  <img src="assets/sequence_land_and_wobble.svg" alt="land and wobble sequence" width="49%">
+  <img src="assets/sequence_neon_sign.svg" alt="neon sign sequence" width="49%">
+  <img src="assets/sequence_glitch_alert.svg" alt="glitch alert sequence" width="49%">
+  <img src="assets/sequence_keep_turning.svg" alt="keep turning sequence" width="49%">
+  <img src="assets/sequence_fade_in_then_breathe.svg" alt="fade in, then breathe sequence" width="49%">
+</p>
+
+<p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
+
+<a id="customization"></a>
+
+<p align="center">
+  <img src="assets/customization.svg" alt="Customization" width="900">
+</p>
+
+<a id="editing-a-theme"></a>
+
+<p align="center">
+  <img src="assets/edit_theme.svg" alt="Editing a theme" width="900">
+</p>
+
+```python
+from svgblock import Block, Theme
+
+# Changes the theme for the whole program: set it before building the blocks
+Theme.RED.value.update(title_text="#FF9900", title_bar="#FF9900")
+Block(theme=Theme.RED).title("Orange titles on the red theme")
+
+# Makes a variation and keeps the original untouched
+softer_red = Theme.RED.value.copy()
+softer_red.update(background_center="#2A1414", text="#FFD9D9")
+Block(theme=softer_red).title("A softer red")
+```
+
+<p align="center">
+  <img src="assets/customization_theme_default.svg" alt="default theme" width="49%">
+  <img src="assets/customization_theme_customized.svg" alt="customized theme" width="49%">
+</p>
+
+<a id="customizing-spacing"></a>
+
+<p align="center">
+  <img src="assets/customization_spacing.svg" alt="Customizing spacing" width="900">
+</p>
+
+<p align="center">
+  <img src="assets/customization_spacing_default.svg" alt="default spacing" width="49%">
+  <img src="assets/customization_spacing_customized.svg" alt="customized spacing" width="49%">
+</p>
+
+<a id="customizing-an-animation"></a>
+
+<p align="center">
+  <img src="assets/customization_animation.svg" alt="Customizing an animation" width="900">
 </p>
 
 ```python
@@ -347,113 +445,8 @@ FadeIn(duration=2, easing=Linear())
 ```
 
 <p align="center">
-  <img src="assets/animation_rise_in_custom.svg" alt="customized rise in animation" width="49%">
-  <img src="assets/animation_drop_in_custom.svg" alt="customized drop in animation" width="49%">
-  <img src="assets/animation_slide_in_custom.svg" alt="customized slide in animation" width="49%">
-  <img src="assets/animation_pop_in_custom.svg" alt="customized pop in animation" width="49%">
-  <img src="assets/animation_spin_in_custom.svg" alt="customized spin in animation" width="49%">
-  <img src="assets/animation_flip_in_custom.svg" alt="customized flip in animation" width="49%">
-  <img src="assets/animation_unfold_in_custom.svg" alt="customized unfold in animation" width="49%">
-  <img src="assets/animation_focus_in_custom.svg" alt="customized focus in animation" width="49%">
-  <img src="assets/animation_pulse_custom.svg" alt="customized pulse animation" width="49%">
-  <img src="assets/animation_sway_custom.svg" alt="customized sway animation" width="49%">
-  <img src="assets/animation_shake_custom.svg" alt="customized shake animation" width="49%">
-</p>
-
-<a id="easings"></a>
-
-<p align="center">
-  <img src="assets/animations_easings.svg" alt="Easings" width="900">
-</p>
-
-```python
-from svgblock import Bounce, CubicBezier, DropIn, EaseOutBack, RiseIn, Spring, Steps
-
-RiseIn(easing=EaseOutBack())
-RiseIn(easing=CubicBezier(0.4, 0, 0.2, 1))
-RiseIn(easing=Steps(10))
-RiseIn(easing=Spring(), duration=1.4)
-DropIn(distance=120, fade=False, easing=Bounce(), duration=1.4)
-```
-
-<p align="center">
-  <img src="assets/animation_easing_back.svg" alt="overshoot easing" width="49%">
-  <img src="assets/animation_easing_bezier.svg" alt="custom curve easing" width="49%">
-  <img src="assets/animation_easing_steps.svg" alt="steps easing" width="49%">
-  <img src="assets/animation_easing_spring.svg" alt="spring easing" width="49%">
-  <img src="assets/animation_easing_bounce.svg" alt="bounce easing" width="49%">
-</p>
-<a id="repeating"></a>
-
-<p align="center">
-  <img src="assets/animations_repeating.svg" alt="Repeating animations" width="900">
-</p>
-
-```python
-from svgblock import Float, Pulse
-
-Pulse()                  # runs once
-Pulse(loop_limit=4)      # runs five times
-Pulse(loop_limit=None)   # never stops
-Float(loop_limit=None)   # any ambient animation works the same way
-```
-
-<a id="sequences"></a>
-
-<p align="center">
-  <img src="assets/animations_sequence.svg" alt="Sequences" width="900">
-</p>
-
-```python
-from svgblock import (Float, Hide, PopIn, Pulse, RiseIn, RiseOut, Sequence, Show,
-                      ZoomIn, ZoomOut)
-
-Sequence(PopIn(), Show(3), loop_limit=None)
-
-Sequence(Hide(0.5), RiseIn(), Pulse(loop_limit=1), Show(2), loop_limit=None)
-
-# Enter, float for three runs, leave
-Sequence(RiseIn(), Float(loop_limit=2), RiseOut(), loop_limit=None)
-
-Sequence(ZoomIn(), Show(2), ZoomOut(), Hide(0.5), loop_limit=None)
-```
-
-<p align="center">
-  <img src="assets/animation_seq_pop_show.svg" alt="replay sequence" width="49%" valign="top">
-  <img src="assets/animation_seq_hide_pulse_show.svg" alt="enter, then pulse sequence" width="49%" valign="top">
-  <img src="assets/animation_seq_rise_float.svg" alt="enter, float, then leave sequence" width="49%" valign="top">
-  <img src="assets/animation_seq_zoom_in_out.svg" alt="zoom in and out sequence" width="49%" valign="top">
-</p>
-
-<a id="animation-errors"></a>
-
-<p align="center">
-  <img src="assets/animations_errors.svg" alt="Animation errors" width="900">
-</p>
-
-```python
-from svgblock import (CubicBezier, EaseOut, Jelly, PopIn, Pulse, RiseIn, Rotate,
-                      Sequence, Show)
-
-RiseIn(distance=-10)               # ValueError: distance must be 0 or more
-RiseIn(loop_limit=2)               # TypeError: unexpected keyword argument 'loop_limit'
-RiseIn(easing="ease-out")          # TypeError: easing must be an Easing, such as EaseOut() ...
-PopIn(easing=EaseOut())            # TypeError: unexpected keyword argument 'easing'
-Rotate(angle=0)                    # ValueError: angle must not be 0
-Jelly(amount=1.5)                  # ValueError: amount must be greater than 0 and less than 1
-CubicBezier(1.5, 0, 0.5, 1)        # ValueError: x1 must be between 0 and 1
-Sequence(RiseIn, Pulse())          # TypeError: A sequence step must be an animation, such as RiseIn() ...
-
-# ValueError: the Show after an infinite step would never play
-Sequence(Pulse(loop_limit=None), Show(1))
-```
-
-<p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
-
-<a id="customization"></a>
-
-<p align="center">
-  <img src="assets/customization.svg" alt="Customization" width="900">
+  <img src="assets/customization_animation_default.svg" alt="default animation" width="49%">
+  <img src="assets/customization_animation_customized.svg" alt="customized animation" width="49%">
 </p>
 
 <a id="creating-your-own-theme"></a>
@@ -480,31 +473,6 @@ ocean = ThemeData(
 
 Block(theme=ocean).title("Ocean").text("A theme created in my own code.").save("assets/ocean.svg")
 ```
-
-<a id="editing-a-theme"></a>
-
-<p align="center">
-  <img src="assets/edit_theme.svg" alt="Editing a theme" width="900">
-</p>
-
-```python
-from svgblock import Block, Theme
-
-# Changes the theme for the whole program: set it before building the blocks
-Theme.RED.value.update(title_text="#FF9900", title_bar="#FF9900")
-Block(theme=Theme.RED).title("Orange titles on the red theme")
-
-# Makes a variation and keeps the original untouched
-softer_red = Theme.RED.value.copy()
-softer_red.update(background_center="#2A1414", text="#FFD9D9")
-Block(theme=softer_red).title("A softer red")
-```
-
-<a id="constants-reference"></a>
-
-<p align="center">
-  <img src="assets/constants.svg" alt="Constants reference" width="900">
-</p>
 
 <p align="right"><a href="#table-of-contents">⬆ back to top</a></p>
 

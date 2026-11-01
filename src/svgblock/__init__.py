@@ -1,6 +1,6 @@
-from .animations import *
+from .components import *
+from . import components
 from .block import Block
-from .composition import Column
-from .themes import ThemeData, Theme
 
-__all__ = ["animations", "Block", "Column", "ThemeData", "Theme"]
+__all__: list[str] = ["Block"]
+__all__ += components.__all__
