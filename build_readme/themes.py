@@ -70,23 +70,15 @@ def validate_theme_categories() -> None:
 
 @register_block_builder("themes_overview.svg")
 def build_themes_overview() -> Block:
-    """Build the block that introduces themes and counts how many each category has."""
+    """Build the block that introduces themes and how to use a ready-made one."""
     return (
         default_block()
         .title("Themes")
         .text("A theme defines every color of a block: the border gradient, the glowing "
-              "background, titles, subsections, text, inline styles, tables and dividers. ")
+              "background, titles, subsections, text, inline styles, tables and dividers.")
         .text("The ready-made themes are the members of the **Theme** enum. To use one, pass it "
               "to the block: **__theme=Theme.NAME__**.")
         .text("Want to tweak a theme or build your own? See Customization.")
-        .divider()
-        .table(
-            ["Category", "Themes"],
-            [[category.title, len(category.themes)]
-             for category in THEME_CATEGORIES],
-            align=("left", "center"),
-            weights=(4, 1),
-        )
     )
 
 
@@ -109,19 +101,18 @@ def build_theme_showcase_block(theme: Theme) -> Block:
         Block(theme, THEME_SHOWCASE_WIDTH, animation=DropIn())
         .title(f"{display_name.upper()} THEME")
         .text(f"Use it with theme=Theme.{theme.name}.")
-        .subsection("Subsection: text and marker")
-        .text("Body text has its own color. Inline styles have theirs: **highlight**, "
-              "__underline__, --strikethrough--, ##italic## and **__combined__**.")
+        .subsection("Subsection")
+        .text("Body text with **highlight**, __underline__, --strikethrough--, ##italic## "
+              "and **__combined__**.")
         .divider()
         .table(
-            ["Element", "Colored by"],
+            ["Language", "Level"],
             [
-                ["Frame", "border and background"],
-                ["Title", "text color and side bar"],
-                ["**Words**", "highlight and inline styles"],
-                ["Table", "header, stripes and lines"],
+                ["Python", "**Advanced**"],
+                ["Rust", "##Learning##"],
+                ["COBOL", "--Retired--"],
             ],
-            weights=(2, 3),
+            weights=(2, 2),
         )
     )
 

@@ -10,10 +10,11 @@ from . import (
     how_to_use,
     building_a_block,
     animations,
-    animation_previews,
     customization,
     themes,
     troubleshooting,
+    easings,
+    repeating_and_sequences
 )
 
 __all__ = [
@@ -22,8 +23,9 @@ __all__ = [
     "how_to_use",
     "building_a_block",
     "animations",
-    "animation_previews",
     "customization",
     "themes",
     "troubleshooting",
+    "easings",
+    "repeating_and_sequences"
 ]

@@ -9,8 +9,7 @@ def build_how_to_use_overview() -> Block:
     return (
         default_block()
         .title("How to Use")
-        .text("Install svgblock, describe a block in Python and save it. The result is an "
-              "ordinary **.svg** file that you can use anywhere an image works.")
+        .text("Install svgblock, describe a block in Python and save it.")
     )
 
 
@@ -31,9 +30,10 @@ def build_step_write_first_block() -> Block:
     return (
         default_block()
         .title("Step 2: Write your first block")
-        .text("Create a file called **generate_blocks.py** with the code below. Every line of "
-              "the chain adds something to the block, in order. The last one, .save(...), "
-              "writes the file and creates the folder if it does not exist.")
+        .text("Create a file called **generate_blocks.py** with the code below. Each line of "
+              "the chain adds something to the block, and the last one, .save(...), writes the "
+              "file and creates the folder if it does not exist. To get the SVG as a string "
+              "instead, use .render().")
     )
 
 
@@ -44,8 +44,8 @@ def build_step_run_script() -> Block:
         default_block()
         .title("Step 3: Run the script")
         .text("When it finishes, the file **assets/block.svg** is ready. Open it in your "
-              "browser to see the result and the animation. Reload the page to watch "
-              "the animation again.")
+              "browser to see the result and the animation, since some image viewers and "
+              "editors do not play animations. Reload the page to watch the animation again.")
     )
 
 

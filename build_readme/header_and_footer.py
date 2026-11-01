@@ -1,4 +1,5 @@
-from src.svgblock import Block
+from src.svgblock import Block, Theme
+
 from .shared import LOGO_PATH, default_block, register_block_builder
 
 
@@ -20,9 +21,9 @@ def build_welcome_introduction() -> Block:
         .text("With a few lines of Python you get a block with a gradient border, a glowing "
               "background and an animation. You pick a **theme** and an **animation**, and "
               "svgblock takes care of colors, spacing, line breaks and the height of the block.")
-        .text("It is plain Python with no external dependencies, and **50 ready-made themes** "
-              "are included. You can also edit them or create your own without touching the "
-              "library's code.")
+        .text(f"It is plain Python with no external dependencies, and **{len(Theme)} "
+              "ready-made themes** are included. You can also edit them or create your own "
+              "without touching the library's code.")
         .text("##Every block in this README was made with svgblock itself.##")
     )
 
