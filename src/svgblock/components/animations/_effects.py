@@ -74,7 +74,7 @@ def _decay(count: int) -> list[tuple[float, float]]:
 
 
 def _check_count(name: str, value: int) -> None:
-    if isinstance(value, bool) or value < 1:
+    if not isinstance(value, int) or isinstance(value, bool) or value < 1:  # type: ignore
         raise ValueError(
             f"{name} must be a whole number of 1 or more, got {value!r}.")
 

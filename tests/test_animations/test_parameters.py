@@ -154,12 +154,6 @@ def test_hold_does_not_accept_a_custom_easing(hold: Callable[..., BaseAnimation]
         hold(duration=1.0, easing=EaseOutBack())
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=TypeError,
-    reason="Counts only reject bools and values below 1; a fractional count "
-           "escapes as a TypeError from range() instead of a ValueError.",
-)
 @pytest.mark.parametrize(
     "factory",
     [
