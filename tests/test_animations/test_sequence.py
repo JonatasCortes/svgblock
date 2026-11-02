@@ -347,12 +347,6 @@ def test_css_name_is_identical_for_equal_sequences() -> None:
         FadeIn(), Show(duration=1.0)).css_name
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="`iterations` stays 1 although `is_infinite` is True when a step "
-           "inside the sequence is endless, contradicting the base-class "
-           "definition `is_infinite == (iterations is None)`.",
-)
 def test_iterations_is_none_when_an_inner_step_is_endless() -> None:
     """Consumers reading ``iterations`` must not be told the sequence plays once."""
     sequence = Sequence(FadeIn(), Pulse(loop_limit=None))

@@ -98,6 +98,12 @@ class Sequence(RepeatableAnimation):
         return self.loop_limit is None and bool(body.head)
 
     @property
+    def iterations(self) -> int | None:
+        if self.is_infinite:
+            return None
+        return super().iterations
+
+    @property
     def max_scale(self) -> float:
         return max([1.0, *(step.max_scale for step in self.steps)])
 
