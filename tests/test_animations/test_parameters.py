@@ -170,11 +170,6 @@ def test_fractional_count_is_rejected_with_the_whole_number_message(
         factory()
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="NaN and infinity pass the `duration <= 0` check and would be "
-           "written into the CSS as `nans` / `infs`.",
-)
 @pytest.mark.parametrize("duration", [float("nan"), float("inf")], ids=["nan", "inf"])
 def test_non_finite_duration_is_rejected(duration: float) -> None:
     """A duration that is not a finite number cannot be rendered as CSS."""
