@@ -94,13 +94,19 @@ class CubicBezier(Easing):
                 raise ValueError(
                     f"{name} must be between 0 and 1, got {value!r}.")
 
+        for name in ("y1", "y2"):
+            value = getattr(self, name)
+            if not math.isfinite(value):
+                raise ValueError(
+                    f"{name} must be a finite number, got {value!r}.")
+
     @property
     def bounds(self) -> tuple[float, float]:
         return bezier_bounds(self.y1, self.y2)
 
     def css(self) -> str:
-        return (f"cubic-bezier({self.x1:g}, {self.y1:g}, "
-                f"{self.x2:g}, {self.y2:g})")
+        return (f"cubic-bezier({self.x1 + 0.0:g}, {self.y1 + 0.0:g}, "
+                f"{self.x2 + 0.0:g}, {self.y2 + 0.0:g})")
 
     def mirrored(self) -> Easing:
         return CubicBezier(1 - self.x2, 1 - self.y2, 1 - self.x1, 1 - self.y1)
@@ -260,7 +266,7 @@ class Spring(Curve):
     bounce: float = 0.5
 
     def __post_init__(self) -> None:
-        if not 0 < self.bounce <= MAX_SPRING_BOUNCE:
+        if not 0 < self.bounce <= MAX_SPRING_BOUNCE or 1.0 - self.bounce == 1.0:
             raise ValueError(
                 f"bounce must be greater than 0 and at most "
                 f"{MAX_SPRING_BOUNCE:g}, got {self.bounce!r}.")
@@ -282,10 +288,11 @@ class Bounce(Curve):
     rebound: float = 0.5
 
     def __post_init__(self) -> None:
-        if isinstance(self.bounces, bool) or self.bounces < 1:
+        if not isinstance(self.bounces, int) or isinstance(self.bounces, bool) or self.bounces < 1:  # type: ignore
             raise ValueError(
                 f"bounces must be a whole number of 1 or more, "
                 f"got {self.bounces!r}.")
+
         if not 0 < self.rebound < 1:
             raise ValueError(
                 f"rebound must be greater than 0 and less than 1, "
@@ -326,7 +333,7 @@ class Steps(Easing):
     jump: Jump = "end"
 
     def __post_init__(self) -> None:
-        if (isinstance(self.count, bool) or self.count < 1):
+        if not isinstance(self.count, int) or isinstance(self.count, bool) or self.count < 1:  # type: ignore
             raise ValueError(
                 f"count must be a whole number of 1 or more, got {self.count!r}.")
         if self.jump not in _MIRRORED_JUMP:
