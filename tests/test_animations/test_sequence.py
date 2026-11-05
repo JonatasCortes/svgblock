@@ -1,9 +1,7 @@
 """Behaviour of ``Sequence``: chaining, timeline compilation and repetition."""
 
 from dataclasses import FrozenInstanceError
-
 import pytest
-
 from svgblock import (
     BaseAnimation,
     EaseInCubic,

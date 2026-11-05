@@ -7,11 +7,9 @@ exist.
 
 import inspect
 from collections.abc import Mapping
-
 import pytest
 import svgblock
 from svgblock import Easing
-
 from .shared import (
     EVERY_EASING,
     FAMILIES,

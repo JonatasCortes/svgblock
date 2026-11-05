@@ -2,9 +2,7 @@
 
 import re
 from dataclasses import FrozenInstanceError, replace
-
 import pytest
-
 from svgblock import (
     BaseAnimation,
     EaseIn,

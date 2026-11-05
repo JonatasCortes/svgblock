@@ -2,10 +2,8 @@
 
 import re
 from typing import Literal
-
 import pytest
 from svgblock import CubicBezier, Easing, Steps
-
 from .shared import CURVES, CUBIC_BEZIERS, PRESETS, each
 
 PlainNumber = r"-?\d+(?:\.\d+)?"

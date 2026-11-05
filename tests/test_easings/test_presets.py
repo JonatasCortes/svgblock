@@ -23,7 +23,6 @@ from svgblock import (
     EaseOutQuint,
     EaseOutSine,
 )
-
 from .shared import (
     BACK_PRESETS,
     MIRROR_PAIRS,

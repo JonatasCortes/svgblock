@@ -1,10 +1,8 @@
 """Contract that every easing must honour, whatever its family."""
 
 import dataclasses
-
 import pytest
 from svgblock import Easing
-
 from .shared import (
     EVERY_EASING,
     JUMPS_AT_START,

@@ -1,9 +1,7 @@
 """Stylesheets produced by ``build_animation_css``."""
 
 from typing import Literal
-
 import pytest
-
 from svgblock import (
     BaseAnimation,
     FadeIn,

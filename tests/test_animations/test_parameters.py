@@ -1,9 +1,7 @@
 """Rejection of invalid parameters and acceptance of boundary values."""
 
 from collections.abc import Callable
-
 import pytest
-
 from svgblock import (
     BaseAnimation,
     Drift,

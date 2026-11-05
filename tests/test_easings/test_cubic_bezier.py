@@ -1,10 +1,8 @@
 """``CubicBezier``: validation, range of values and mirroring."""
 
 import math
-
 import pytest
 from svgblock import CubicBezier
-
 from .shared import TOLERANCE
 
 NON_FINITE = [math.nan, math.inf, -math.inf]

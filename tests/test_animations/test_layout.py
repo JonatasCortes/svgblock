@@ -1,9 +1,7 @@
 """Space an animation needs around an element: extent, scale, blur and margins."""
 
 from typing import Literal
-
 import pytest
-
 from svgblock import (
     BaseAnimation,
     DropIn,

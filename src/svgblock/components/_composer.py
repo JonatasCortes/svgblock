@@ -1,3 +1,4 @@
+import math
 from collections.abc import Sequence
 from pathlib import Path
 from typing import TypeVar
@@ -50,15 +51,21 @@ class Composer:
         return self
 
     def image(self: _Self, path: str | Path, width: float | None = None) -> _Self:
-        if width is not None and width <= 0:
+        if width is not None and (not math.isfinite(width) or width <= 0):
             raise ValueError(
-                f"Image width must be greater than zero, got {width!r}.")
+                f"Image width must be greater than zero and finite, got {width!r}.")
         self._components.append(Image(read_image(path), width))
         return self
 
     def columns(self: _Self, *columns: WeightedComponent) -> _Self:
         if not columns:
             raise ValueError("columns() needs at least one Column.")
+        for column in columns:
+            if isinstance(column, Composer) and column._contains(self):
+                raise ValueError(
+                    "columns() cannot contain the composer it is being added to, "
+                    "directly or indirectly."
+                )
         self._components.append(ColumnRow(columns))
         return self
 
@@ -95,9 +102,9 @@ class Composer:
         if len(column_weights) != column_count:
             raise ValueError(
                 f"weights needs {column_count} values, got {len(column_weights)}.")
-        if any(weight <= 0 for weight in column_weights):
+        if any(not math.isfinite(weight) or weight <= 0 for weight in column_weights):
             raise ValueError(
-                f"Column weights must be greater than zero, got {column_weights!r}.")
+                f"Column weights must be greater than zero and finite, got {column_weights!r}.")
 
         style = TableStyle(
             font_size=font_size,
@@ -126,6 +133,25 @@ class Composer:
                 f"Divider coverage must be between 0 and 1, got {coverage!r}.")
         self._components.append(Divider(coverage))
         return self
+
+    def _contains(self, target: "Composer") -> bool:
+        pending: list[Composer] = [self]
+        visited: set[int] = set()
+        while pending:
+            current = pending.pop()
+            if current is target:
+                return True
+            if id(current) in visited:
+                continue
+            visited.add(id(current))
+            for component in current._components:
+                if isinstance(component, ColumnRow):
+                    pending.extend(
+                        child
+                        for child in component.columns
+                        if isinstance(child, Composer)
+                    )
+        return False
 
     def _render_components(self, theme: ThemeData, left: float, top: float, width: float) -> RenderedComponent:
         parts: list[str] = []

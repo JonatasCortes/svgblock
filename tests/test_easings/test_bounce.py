@@ -1,10 +1,8 @@
 """``Bounce``: validation of ``bounces`` and ``rebound`` and the bouncing curve."""
 
 import math
-
 import pytest
 from svgblock import Bounce
-
 from .shared import TOLERANCE, is_valid_timing_function, sample, unchecked
 
 FINE_POINTS: tuple[float, ...] = tuple(index / 4000 for index in range(4001))

@@ -2,7 +2,6 @@ import math
 import re
 from collections.abc import Callable, Mapping, Sequence
 from typing import Any
-
 import pytest
 from svgblock import (
     Bounce,

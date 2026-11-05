@@ -2,7 +2,6 @@
 
 import pytest
 from svgblock import EaseIn, EaseInOut, EaseOut, Easing, Linear
-
 from .shared import KEYWORDS, TOLERANCE, each, timing_function
 
 EXPECTED_CSS: dict[str, Easing] = {

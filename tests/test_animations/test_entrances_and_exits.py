@@ -1,9 +1,7 @@
 """Behaviour of entrance and exit animations."""
 
 from typing import Literal
-
 import pytest
-
 from svgblock import (
     BaseAnimation,
     DropIn,

@@ -1,9 +1,7 @@
 """Behaviour of looping animations and of the ``loop_limit`` contract."""
 
 from typing import Literal
-
 import pytest
-
 from svgblock import BaseAnimation, Drift, Float, Jelly, Pulse, Rotate, Shake, Sway
 from tests.test_animations.shared import (
     LOOP_FACTORIES,
