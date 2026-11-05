@@ -145,7 +145,7 @@ class BaseAnimation(ABC):
     easing: Easing = EaseOut()
 
     def __post_init__(self) -> None:
-        if self.duration <= 0:
+        if not math.isfinite(self.duration) or self.duration <= 0:
             raise ValueError(
                 f"duration must be greater than 0, got {self.duration!r}.")
         if self.extent("blur")[0] < 0:

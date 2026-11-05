@@ -7,7 +7,7 @@ from ._width import measure_text_width
 @dataclass(frozen=True)
 class _Word:
     pieces: tuple[TextSegment, ...]
-    trailing_space: TextSegment | None
+    trailing_spaces: tuple[TextSegment, ...]
 
 
 def wrap_bold_text(text: str, font_size: float, max_width: float) -> list[str]:
@@ -43,16 +43,21 @@ def wrap_into_lines(
 def _split_into_words(segments: list[TextSegment]) -> list[_Word]:
     words: list[_Word] = []
     pieces: list[TextSegment] = []
+    spaces: list[TextSegment] = []
     for segment in segments:
         for part in re.compile(r"\s+|\S+").findall(segment.text):
             piece = TextSegment(text=part, styles=segment.styles)
-            if not part.isspace():
-                pieces.append(piece)
-            elif pieces:
-                words.append(_Word(pieces=tuple(pieces), trailing_space=piece))
-                pieces = []
+            if part.isspace():
+                spaces.append(piece)
+                continue
+            if not pieces:
+                pieces, spaces = spaces, []
+            elif spaces:
+                words.append(_Word(tuple(pieces), tuple(spaces)))
+                pieces, spaces = [], []
+            pieces.append(piece)
     if pieces:
-        words.append(_Word(pieces=tuple(pieces), trailing_space=None))
+        words.append(_Word(tuple(pieces), tuple(spaces)))
     return words
 
 
@@ -85,9 +90,10 @@ def _break_oversized_word(
 
     merged = [tuple(_merge_adjacent_segments(fragment))
               for fragment in fragments]
-    result = [_Word(pieces=pieces, trailing_space=None)
+    result = [_Word(pieces=pieces, trailing_spaces=())
               for pieces in merged[:-1]]
-    result.append(_Word(pieces=merged[-1], trailing_space=word.trailing_space))
+    result.append(
+        _Word(pieces=merged[-1], trailing_spaces=word.trailing_spaces))
     return result
 
 
@@ -95,8 +101,7 @@ def _flatten_line(words: list[_Word]) -> list[TextSegment]:
     segments: list[TextSegment] = []
     for word in words[:-1]:
         segments.extend(word.pieces)
-        if word.trailing_space:
-            segments.append(word.trailing_space)
+        segments.extend(word.trailing_spaces)
     segments.extend(words[-1].pieces)
     return segments
 

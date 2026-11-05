@@ -78,8 +78,11 @@ def _close_segment(
     segments: list[TextSegment], pending_characters: list[str], active_styles: list[Style]
 ) -> None:
     if pending_characters:
-        segments.append(TextSegment(
-            "".join(pending_characters), tuple(active_styles)))
+        text = "".join(pending_characters)
+        styles = tuple(active_styles)
+        if segments and segments[-1].styles == styles:
+            text = segments.pop().text + text
+        segments.append(TextSegment(text, styles))
         pending_characters.clear()
 
 

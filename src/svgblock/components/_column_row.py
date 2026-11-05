@@ -9,6 +9,10 @@ class ColumnRow(Component):
     def __init__(self, columns: Sequence[WeightedComponent]) -> None:
         self._columns = tuple(columns)
 
+    @property
+    def columns(self) -> tuple[WeightedComponent, ...]:
+        return self._columns
+
     def render(self, theme: ThemeData, left: float, top: float, width: float) -> RenderedComponent:
         available_width = width - COLUMN_GAP * (len(self._columns) - 1)
         total_weight = sum(column.weight for column in self._columns)

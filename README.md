@@ -6,6 +6,7 @@
   <img src="https://img.shields.io/pypi/v/svgblock?color=3776AB&logo=pypi&logoColor=white" alt="PyPI version">
   <img src="https://img.shields.io/badge/python-3.10+-3776AB?logo=python&logoColor=white" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/dependencies-none-2ea44f" alt="No dependencies">
+  <img src="https://img.shields.io/badge/coverage-95%25%2B-2ea44f?logo=pytest&logoColor=white" alt="Coverage 95%+">
   <img src="https://img.shields.io/badge/themes-50-ff0055" alt="50 themes">
   <img src="https://img.shields.io/badge/animations-31-8A2BE2" alt="31 animations">
   <img src="https://img.shields.io/badge/easings-26-00B8D9" alt="26 easings">
