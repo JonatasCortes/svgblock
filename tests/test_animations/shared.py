@@ -1,10 +1,3 @@
-"""Shared catalogues, typed views and helpers for the animation tests.
-
-The animation keyframe types are intentionally not part of the public API, so
-the tests describe the objects returned by public methods through read-only
-structural protocols instead of importing private classes.
-"""
-
 import re
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass

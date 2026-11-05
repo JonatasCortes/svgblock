@@ -50,6 +50,8 @@ def measure_text_width(text: str, font_size: float, bold: bool = False) -> float
 
 
 def _measure_character(character: str, character_widths: dict[str, int]) -> int:
+    if character.isspace():
+        return character_widths[" "]
     return character_widths.get(_remove_accent(character), UNKNOWN_CHARACTER_WIDTH)
 
 

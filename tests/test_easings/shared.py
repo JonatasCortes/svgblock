@@ -1,16 +1,3 @@
-"""Shared catalogues, helpers and a timing function evaluator for easing tests.
-
-Easings are described only through the public API of ``svgblock``. To check the
-behaviour a user actually receives, the evaluator below turns the output of
-``Easing.css()`` into a plain ``f(t)`` function that follows the CSS Easing
-specification, so the tests never reach into private attributes.
-
-Registering a new easing takes one step: import it and add it to the family
-collection it belongs to. The collections that describe special traits
-(``MIRROR_PAIRS``, ``SELF_MIRRORED``, ``OVERSHOOTING``, ``NON_MONOTONIC``) only
-need an entry when the new easing has that trait.
-"""
-
 import math
 import re
 from collections.abc import Callable, Mapping, Sequence
